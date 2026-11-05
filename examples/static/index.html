@@ -179,16 +179,27 @@
                 --pg-spotlight-size: 0%;
                 --pg-spotlight-fade: 60%;
             }
+            /* Wide and soft, and dark: nothing without the light — bugatti.com's. */
+            [data-light="wide-dark"] {
+                --pg-spotlight-base: 0;
+                --pg-spotlight-lit: 0.4;
+                --pg-spotlight-size: 0%;
+                --pg-spotlight-fade: 60%;
+            }
 
             /* Edge to edge, flush with the bottom: out of the footer's side
                padding, and cut a little by the page's edge — as bugatti.com
                has it. */
             .footer .flush {
                 margin-inline: calc(-1 * clamp(1.25rem, 3vw, 3rem));
+            }
+            /* On the bottom only: within the side padding, sitting on the
+               page's bottom edge. */
+            .footer :is(.flush, .on-bottom) {
                 padding-bottom: 0;
                 overflow: hidden;
             }
-            .flush > * {
+            :is(.flush, .on-bottom) > * {
                 margin-bottom: -1%;
             }
         </style>
@@ -314,25 +325,28 @@
         <!-- 4 · Set in a font: the same logo as text, in Roboto Black from
              Google Fonts. -->
         <footer class="footer">
-            <h2>Set in a font — 40% showing, edge to edge · shown on phones</h2>
+            <h2>Set in a font — 40% showing, on the bottom · shown on phones</h2>
             <p>
                 The same "PlusGuard", as <code>&lt;text&gt;</code> in an SVG — Roboto Black, from Google Fonts. The
                 SVG's <code>viewBox</code> keeps it the width of the page, like a drawing; until the font has
                 loaded, a fallback stands in. No text cursor over it, nothing to select. The grain is the same
-                fine one as above: it is measured in the page's pixels, not the drawing's. The light's two shapes
-                again — on a logo that shows without it:
+                fine one as above: it is measured in the page's pixels, not the drawing's. The light again, three
+                ways — on a logo that shows without it, and dark:
             </p>
             <div class="row" role="group" aria-label="The light">
                 <button type="button" data-light-choice="small" aria-pressed="true">A small circle — the default</button>
                 <button type="button" data-light-choice="wide" aria-pressed="false">Wide and soft</button>
+                <button type="button" data-light-choice="wide-dark" aria-pressed="false">Wide, soft and dark — as bugatti.com</button>
             </div>
             <div class="columns">
                 <div><b>Engine</b><ul><li>Packages</li><li>Themes</li></ul></div>
                 <div><b>Docs</b><ul><li>Guides</li><li>Examples</li></ul></div>
                 <div><b>Company</b><ul><li>About</li><li>Contact</li></ul></div>
             </div>
-            <div class="flush" data-light="small" data-pg-spotlight data-pg-spotlight-grain data-pg-spotlight-touch>
-                <svg viewBox="10.74 -150 881.88 151.95" role="img" aria-label="PlusGuard">
+            <div class="on-bottom" data-light="small" data-pg-spotlight data-pg-spotlight-grain data-pg-spotlight-touch>
+                <!-- The viewBox is the word's full width, side bearings and all,
+                     so a font a little wider than the one measured is not cut. -->
+                <svg viewBox="0 -150 898 152" role="img" aria-label="PlusGuard">
                     <text font-family="Roboto, system-ui, sans-serif" font-weight="900" font-size="200" letter-spacing="-5">PlusGuard</text>
                 </svg>
             </div>

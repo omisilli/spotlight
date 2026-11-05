@@ -96,7 +96,9 @@ The logo is the box's first element — any of these:
 **Paths** need nothing to load and look the same everywhere: export the
 logo from your design tool, or turn its letters into outlines. **A font**
 is the quickest — type the name, pick the face — but until the font has
-loaded a fallback stands in, and the `viewBox` has to fit the word.
+loaded a fallback stands in, and the `viewBox` has to fit the word: give
+it the word's full width, side bearings and all, so a slightly different
+build of the font is not cut at the end.
 **An image** is one file for light and dark: it will not turn with the
 page, so a dark logo is lost on a dark footer. **Plain text** sizes like
 text (`font-size`, `clamp()`), not by the box's width.
@@ -104,7 +106,7 @@ text (`font-size`, `clamp()`), not by the box's width.
 ```html
 <!-- Set in a font: the viewBox fits the word; the font loads as any web font. -->
 <div data-pg-spotlight data-pg-spotlight-grain>
-    <svg viewBox="10.74 -150 881.88 151.95" role="img" aria-label="PlusGuard">
+    <svg viewBox="0 -150 898 152" role="img" aria-label="PlusGuard">
         <text font-family="Roboto" font-weight="900" font-size="200" letter-spacing="-5">PlusGuard</text>
     </svg>
 </div>
@@ -267,7 +269,7 @@ answers.
 
 See [`examples/react/Example.tsx`](examples/react/Example.tsx). A plain HTML
 version, with four footers — Gaga, Baibars, Bugatti (dark until found,
-edge to edge), set in a font and edge to edge; the last two with a switch
-between the wide soft light and a small circle; each saying whether it
-shows on phones — and a light/dark switch, is in
+edge to edge, with a switch to a small circle), set in a font on the
+page's bottom (a small circle, wide and soft, or wide, soft and dark);
+each saying whether it shows on phones — and a light/dark switch, is in
 [`examples/static/index.html`](examples/static/index.html).

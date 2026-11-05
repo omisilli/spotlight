@@ -28,6 +28,12 @@ export function Spotlights() {
  *       --pg-spotlight-size: 0%;     fading all the way — without it,
  *       --pg-spotlight-fade: 60%;    the package's small circle
  *   }
+ *   [data-light="wide-dark"] {       and dark: bugatti.com's
+ *       --pg-spotlight-base: 0;
+ *       --pg-spotlight-lit: 0.4;
+ *       --pg-spotlight-size: 0%;
+ *       --pg-spotlight-fade: 60%;
+ *   }
  *   .flush {                         edge to edge, on the page's bottom
  *       margin-inline: calc(-1 * var(--footer-padding));
  *       overflow: hidden;
@@ -42,20 +48,15 @@ export function Spotlights() {
  *   .gaga stop:nth-child(1) { stop-color: var(--metal-1); } … (6 stops)
  */
 
-/* The light's two shapes, for one footer: wide and soft, or a small
-   circle. */
-type Light = "wide" | "small";
-function LightSwitch({ light, set, first }: { light: Light; set: (l: Light) => void; first: Light }) {
-    const choices: { value: Light; label: string }[] = [
-        { value: "wide", label: first === "wide" ? "Wide and soft — as bugatti.com" : "Wide and soft" },
-        { value: "small", label: first === "small" ? "A small circle — the default" : "A small circle" },
-    ];
-    if (first === "small") choices.reverse();
+/* The light's shapes, for one footer — the buttons it offers, the first
+   one pressed to start. */
+type Light = "small" | "wide" | "wide-dark";
+function LightSwitch({ light, set, choices }: { light: Light; set: (l: Light) => void; choices: [Light, string][] }) {
     return (
         <div role="group" aria-label="The light">
-            {choices.map((c) => (
-                <button key={c.value} type="button" aria-pressed={light === c.value} onClick={() => set(c.value)}>
-                    {c.label}
+            {choices.map(([value, label]) => (
+                <button key={value} type="button" aria-pressed={light === value} onClick={() => set(value)}>
+                    {label}
                 </button>
             ))}
         </div>
@@ -117,7 +118,14 @@ export function BugattiFooter() {
     return (
         <footer>
             {/* … columns of links … */}
-            <LightSwitch light={light} set={setLight} first="wide" />
+            <LightSwitch
+                light={light}
+                set={setLight}
+                choices={[
+                    ["wide", "Wide and soft — as bugatti.com"],
+                    ["small", "A small circle"],
+                ]}
+            />
             {/* Shown on phones too, at 0.2: dark until found is not lost there. */}
             <div
                 className="bugatti flush"
@@ -144,10 +152,21 @@ export function FontFooter() {
     return (
         <footer>
             {/* … columns of links … */}
-            <LightSwitch light={light} set={setLight} first="small" />
-            {/* Shown on phones. */}
-            <div className="flush" data-light={light} data-pg-spotlight data-pg-spotlight-grain data-pg-spotlight-touch>
-                <svg viewBox="10.74 -150 881.88 151.95" role="img" aria-label="PlusGuard">
+            <LightSwitch
+                light={light}
+                set={setLight}
+                choices={[
+                    ["small", "A small circle — the default"],
+                    ["wide", "Wide and soft"],
+                    ["wide-dark", "Wide, soft and dark — as bugatti.com"],
+                ]}
+            />
+            {/* Shown on phones. On the page's bottom, within the side padding:
+                .on-bottom { overflow: hidden } .on-bottom > * { margin-bottom: -1% }
+                The viewBox is the word's full width, so a slightly wider
+                font is not cut. */}
+            <div className="on-bottom" data-light={light} data-pg-spotlight data-pg-spotlight-grain data-pg-spotlight-touch>
+                <svg viewBox="0 -150 898 152" role="img" aria-label="PlusGuard">
                     {/* style, not the font-family attribute: an attribute takes no var(). */}
                     <text style={{ fontFamily: "var(--font-roboto), Roboto, system-ui, sans-serif" }} fontWeight="900" fontSize="200" letterSpacing="-5">
                         PlusGuard
