@@ -193,14 +193,18 @@
             .footer .flush {
                 margin-inline: calc(-1 * clamp(1.25rem, 3vw, 3rem));
             }
-            /* On the bottom only: within the side padding, sitting on the
-               page's bottom edge. */
-            .footer :is(.flush, .on-bottom) {
+            .footer .flush {
                 padding-bottom: 0;
                 overflow: hidden;
             }
-            :is(.flush, .on-bottom) > * {
+            .flush > * {
                 margin-bottom: -1%;
+            }
+            /* On the bottom, uncut: within the side padding, the letters
+               standing on the page's bottom edge — the viewBox ends where
+               they do, so there is nothing to cut. */
+            .footer .on-bottom {
+                padding-bottom: 0;
             }
         </style>
         <script>

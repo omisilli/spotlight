@@ -161,10 +161,10 @@ export function FontFooter() {
                     ["wide-dark", "Wide, soft and dark — as bugatti.com"],
                 ]}
             />
-            {/* Shown on phones. On the page's bottom, within the side padding:
-                .on-bottom { overflow: hidden } .on-bottom > * { margin-bottom: -1% }
-                The viewBox is the word's full width, so a slightly wider
-                font is not cut. */}
+            {/* Shown on phones. On the page's bottom, uncut, within the side
+                padding: .on-bottom { padding-bottom: 0 } — the viewBox ends
+                where the letters do. It is the word's full width, so a
+                slightly wider build of the font is not cut either. */}
             <div className="on-bottom" data-light={light} data-pg-spotlight data-pg-spotlight-grain data-pg-spotlight-touch>
                 <svg viewBox="0 -150 898 152" role="img" aria-label="PlusGuard">
                     {/* style, not the font-family attribute: an attribute takes no var(). */}

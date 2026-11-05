@@ -162,6 +162,10 @@ of the footer's side padding, and cut it short:
 }
 ```
 
+Standing on the bottom edge without a cut: no negative margin, no
+`overflow` — and a `viewBox` that ends where the letters do, so the drawing
+has no empty strip below them.
+
 ## Grain
 
 `data-pg-spotlight-grain` gives the logo a fine, filmic texture — dense,
