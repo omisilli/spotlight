@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { initSpotlight } from "@plusguard/spotlight";
 import "@plusguard/spotlight/index.css";
 
@@ -19,9 +19,16 @@ export function Spotlights() {
  *
  * Its look is CSS — set it anywhere above the logo, media queries welcome:
  *
- *   .closed {
- *       --pg-spotlight-base: 0;      dark until the pointer finds it
- *       --pg-spotlight-lit: 0.45;    then soft, as bugatti.com has it
+ *   .bugatti {                       bugatti.com's: dark until found,
+ *       --pg-spotlight-base: 0;      then a light as wide as the logo,
+ *       --pg-spotlight-lit: 0.4;     fading all the way
+ *       --pg-spotlight-size: 0%;
+ *       --pg-spotlight-fade: 60%;
+ *   }
+ *   .bugatti[data-light="small"] {   or a small circle, dark around it
+ *       --pg-spotlight-lit: 0.6;
+ *       --pg-spotlight-size: 160px;
+ *       --pg-spotlight-fade: 420px;
  *   }
  *   .flush {                         edge to edge, on the page's bottom
  *       margin-inline: calc(-1 * var(--footer-padding));
@@ -85,10 +92,20 @@ export function BaibarsFooter() {
    bugatti.com's footer has it. The wordmark is drawn as a path for this
    example; BUGATTI is its owner's trademark. */
 export function BugattiFooter() {
+    // Its wide soft light, or a small circle — the same logo either way.
+    const [light, setLight] = useState<"wide" | "small">("wide");
     return (
         <footer>
             {/* … columns of links … */}
-            <div className="closed flush" data-pg-spotlight data-pg-spotlight-grain>
+            <div role="group" aria-label="The light">
+                <button type="button" aria-pressed={light === "wide"} onClick={() => setLight("wide")}>
+                    Wide and soft — as bugatti.com
+                </button>
+                <button type="button" aria-pressed={light === "small"} onClick={() => setLight("small")}>
+                    A small circle
+                </button>
+            </div>
+            <div className="bugatti flush" data-light={light} data-pg-spotlight data-pg-spotlight-grain>
                 <svg viewBox="0 0 2468.89 566.93" role="img" aria-label="Bugatti">
                     <path d="M272.56 273.34c28.81-26.48 45.95-63.86 45.95-107.47 0-89.56-65.41-154.97-155.75-154.97H0v545.13h174.44c92.67 0 160.42-66.97 160.42-159.64 0-52.18-23.36-95.79-62.3-123.04ZM87.22 95.01h72.42c42.83 0 71.65 28.81 71.65 70.87s-28.81 70.87-71.65 70.87H87.22V95.01Zm84.1 376.91h-84.1V320.84h84.1c45.17 0 76.32 30.37 76.32 75.54s-31.15 75.54-76.32 75.54ZM648.69 406.51c0 44.39-31.93 76.32-76.32 76.32s-76.32-31.93-76.32-76.32V10.9h-87.22v389.38c0 96.56 68.53 166.65 163.54 166.65s163.54-70.09 163.54-166.65V10.9h-87.22v395.61ZM993.03 0c-95.01 0-163.54 70.09-163.54 166.65v233.62c0 96.56 68.53 166.65 163.54 166.65s163.54-70.09 163.54-166.65V241.41H993.03v84.11h76.32v80.99c0 44.39-31.93 76.32-76.32 76.32s-76.32-31.93-76.32-76.32V160.42c0-44.39 31.93-76.32 76.32-76.32s76.32 31.93 76.32 76.32v14.02h87.22v-7.79C1156.57 70.09 1088.04 0 993.03 0ZM1344.1 10.9l-125.38 545.12h86.44L1330.08 447h147.96l24.92 109.02h86.44L1464.03 10.9H1344.1Zm5.45 351.99 54.51-239.08 54.51 239.08h-109.02ZM1604.2 95.01h119.93l.78 461.02h85.66l.78-461.02h119.92V10.9H1604.2v84.11zM1976.59 95.01h119.93l.78 461.02h85.66l.78-461.02h119.92V10.9h-327.07v84.11zM2381.67 10.9h87.22v545.12h-87.22z" />
                 </svg>

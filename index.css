@@ -10,6 +10,10 @@
  *   --pg-spotlight-lit     how bright it is in the light. 0.6
  *   --pg-spotlight-size    the circle's fully lit middle. 160px
  *   --pg-spotlight-fade    where its soft edge ends. 420px
+ *                          Both take a length, or a percentage: a share of
+ *                          the way from the pointer to the logo's farthest
+ *                          corner — 0% and 60% is a light as wide as the
+ *                          logo, fading all the way (bugatti.com's)
  *   --pg-spotlight-touch   how much shows on a touch screen, with
  *                          data-pg-spotlight-touch. 0.2
  *
@@ -18,13 +22,13 @@
  */
 
 @property --pg-spotlight-size {
-    syntax: "<length>";
+    syntax: "<length-percentage>";
     inherits: true;
     initial-value: 160px;
 }
 
 @property --pg-spotlight-fade {
-    syntax: "<length>";
+    syntax: "<length-percentage>";
     inherits: true;
     initial-value: 420px;
 }

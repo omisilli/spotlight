@@ -12,7 +12,7 @@ dark, with or without Lenis; no dependencies.
 ```
 
 ```sh
-npm install github:omisilli/spotlight#v1.1.0
+npm install github:omisilli/spotlight#v1.2.0
 ```
 
 ```ts
@@ -31,14 +31,14 @@ Or the CSS from CSS, which lets you pick the cascade layer:
 ### Without a build step
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/omisilli/spotlight@v1.1.0/index.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/omisilli/spotlight@v1.2.0/index.css" />
 <script type="module">
-    import { initSpotlight } from "https://cdn.jsdelivr.net/gh/omisilli/spotlight@v1.1.0/dist/index.js";
+    import { initSpotlight } from "https://cdn.jsdelivr.net/gh/omisilli/spotlight@v1.2.0/dist/index.js";
     initSpotlight();
 </script>
 ```
 
-Pin the version (`@v1.1.0`) on a live site. A pinned URL never changes;
+Pin the version (`@v1.2.0`) on a live site. A pinned URL never changes;
 `@1` follows the newest 1.x release.
 
 ## Attributes
@@ -102,21 +102,36 @@ text (`font-size`, `clamp()`), not by the box's width.
 Whatever it is, the logo is a picture: no text cursor over it, nothing to
 select — inside a link, the link's pointer.
 
-## Two ways to show it
+## The look: how much shows, how wide the light
 
-| `--pg-spotlight-base` | The logo                                                             |
-| --------------------- | -------------------------------------------------------------------- |
-| `0.4` — the default   | Always there, dim; the pointer brightens it                         |
-| `0`                   | Not there at all until the pointer comes near — then only around it |
+Two choices, both CSS: how much of the logo shows without the light
+(`--pg-spotlight-base`), and how the light falls off around the pointer
+(`--pg-spotlight-size`, `--pg-spotlight-fade`).
+
+| Look                              | `base` | `size` | `fade`  | `lit` | The logo                                                                   |
+| --------------------------------- | ------ | ------ | ------- | ----- | -------------------------------------------------------------------------- |
+| Dim, a circle of light — the default | `0.4`  | `160px` | `420px` | `0.6` | Always there; brighter around the pointer                                |
+| Dark, a small circle              | `0`    | `160px` | `420px` | `0.6` | Not there at all, but in a circle around the pointer                      |
+| Dark, a wide soft light — bugatti.com's | `0`    | `0%`   | `60%`   | `0.4` | Not there without the pointer — then the letters fade out the farther they are from it; never a hard circle |
 
 ```css
+/* bugatti.com's: the light as wide as the logo, fading all the way. */
 .footer-logo {
     --pg-spotlight-base: 0;
-    --pg-spotlight-lit: 0.45; /* soft, as bugatti.com has it */
+    --pg-spotlight-lit: 0.4;
+    --pg-spotlight-size: 0%;
+    --pg-spotlight-fade: 60%;
 }
 ```
 
-Anything between works too: `0.15` is a faint outline that lights up.
+`size` and `fade` take a length or a percentage. A percentage is a share
+of the way from the pointer to the logo's farthest corner — so the light
+grows with the logo. `0%` means no fully lit middle at all: it starts to
+fade right at the pointer. For a softer edge, move `fade` away from
+`size`; for a hard one, bring them together.
+
+Anything between works too: a `base` of `0.15` is a faint outline that
+lights up.
 
 ### Edge to edge, on the bottom
 
@@ -198,8 +213,8 @@ Set anywhere above the logo — media queries welcome.
 | `--pg-spotlight-color`   | `currentColor` | The logo's colour, where its SVG has none             |
 | `--pg-spotlight-base`    | `0.4`          | How much shows without the light; `0` for none        |
 | `--pg-spotlight-lit`     | `0.6`          | How bright it is in the light                         |
-| `--pg-spotlight-size`    | `160px`        | The circle's fully lit middle                         |
-| `--pg-spotlight-fade`    | `420px`        | Where its soft edge ends                              |
+| `--pg-spotlight-size`    | `160px`        | The circle's fully lit middle — a length, or a % of the way to the logo's farthest corner |
+| `--pg-spotlight-fade`    | `420px`        | Where its soft edge ends — a length or a %           |
 | `--pg-spotlight-touch`   | `0.2`          | How much shows on a touch screen, with `data-pg-spotlight-touch` |
 
 With reduced motion asked for, the light comes and goes without fading.
@@ -218,7 +233,7 @@ however it scrolls.
 | `<filter id="noiseFilter">` in each SVG — the same id twice on a page | `data-pg-spotlight-grain`; one filter for the page |
 | The grain in the drawing's units: coarse on a small `viewBox`, fine on a large one | In the page's pixels: the same on every logo |
 | `opacity: .4` on each copy                   | `--pg-spotlight-base`, `--pg-spotlight-lit`        |
-| `--r1` / `--r2`                              | `--pg-spotlight-size` / `--pg-spotlight-fade`      |
+| `--r1` / `--r2`                              | `--pg-spotlight-size` / `--pg-spotlight-fade` — px, or % for a light that grows with the logo |
 | The light stayed behind when the page scrolled | It stays on the pointer                          |
 | `.qua-footer` listened for the pointer       | The whole page: the light can reach the logo from above it |
 | Hidden on phones by the theme (`display: none`) | Hidden on touch screens by default; `data-pg-spotlight-touch` keeps it |
@@ -236,5 +251,6 @@ after hydration, so the server's HTML and the browser's agree.
 
 See [`examples/react/Example.tsx`](examples/react/Example.tsx). A plain HTML
 version, with four footers — Gaga, Baibars, Bugatti (dark until found,
-edge to edge), set in a font — a light/dark switch and a `?lenis` switch, is in
+edge to edge, with a switch between its wide soft light and a small
+circle), set in a font — a light/dark switch and a `?lenis` switch, is in
 [`examples/static/index.html`](examples/static/index.html).
