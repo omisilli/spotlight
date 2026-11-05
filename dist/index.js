@@ -13,7 +13,7 @@
  * under a still pointer (Lenis or not).
  *
  *   data-pg-spotlight          on the box around the logo's <svg>
- *   data-pg-spotlight-grain    a grainy, filmic texture on an SVG's shapes
+ *   data-pg-spotlight-grain    a grainy, filmic texture
  *   data-pg-spotlight-touch    shown on touch screens too — where there is
  *                              no pointer, so no light; hidden there unless
  *                              this is set
@@ -31,7 +31,8 @@ const LIT = "data-pg-spotlight-lit";
 const ACTIVE = "data-pg-spotlight-active";
 const GRAIN_ID = "pg-spotlight-grain";
 /* The grain, once per page, for every spotlight: fine noise that the
-   shapes are cut from (index.css applies it). */
+   logo is cut from (index.css applies it). One cycle per pixel or so —
+   the dense, small dots of a print, whatever the logo's size. */
 function addGrain() {
     if (document.getElementById(GRAIN_ID))
         return;
@@ -43,7 +44,7 @@ function addGrain() {
     svg.style.position = "absolute";
     svg.innerHTML =
         `<filter id="${GRAIN_ID}">` +
-            `<feTurbulence type="fractalNoise" baseFrequency="1" numOctaves="4" result="noise"/>` +
+            `<feTurbulence type="fractalNoise" baseFrequency="1.9" numOctaves="4" result="noise"/>` +
             `<feComposite in="SourceGraphic" in2="noise" operator="in"/>` +
             `</filter>`;
     document.body.append(svg);

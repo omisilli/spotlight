@@ -79,9 +79,11 @@
     opacity: var(--pg-spotlight-lit, 0.6);
 }
 
-/* The grain: the shapes cut from fine noise. The filter is added to the
-   page by index.ts. */
-:where([data-pg-spotlight-grain]) > svg :is(path, rect, circle, ellipse, polygon, polyline, line, text, use) {
+/* The grain: the logo cut from fine noise — set on the whole element, so
+   it is measured in the page's pixels: the same fine grain on every logo,
+   however large its drawing's own units. The filter is added to the page
+   by index.ts. */
+:where([data-pg-spotlight-grain]) > * {
     filter: url(#pg-spotlight-grain);
 }
 

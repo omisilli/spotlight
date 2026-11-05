@@ -1,6 +1,6 @@
 {
     "name": "@plusguard/spotlight",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "description": "A large logo lit by the pointer: a dim, grainy wordmark that brightens in a soft circle around the cursor — or stays dark until the pointer finds it. From HTML attributes, for any SVG; light and dark, with or without Lenis. Zero dependencies. CSS included.",
     "type": "module",
     "main": "./dist/index.js",

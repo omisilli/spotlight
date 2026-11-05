@@ -7,7 +7,7 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>spotlight — example</title>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/omisilli/spotlight@v1.0.0/index.css" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/omisilli/spotlight@v1.1.0/index.css" />
         <!-- Only takes effect with ?lenis: it styles html.lenis. -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.css" />
         <!-- Roboto Black — for the last footer, whose logo is set in type. -->
@@ -159,18 +159,22 @@
             .gaga stop:nth-child(5) { stop-color: var(--metal-5); }
             .gaga stop:nth-child(6) { stop-color: var(--metal-6); }
 
-            /* Dark until the pointer finds it — and brighter when it does. */
+            /* Dark until the pointer finds it — then soft, as bugatti.com has
+               it: the fine grain reads as a grey, not as dots. */
             .closed {
                 --pg-spotlight-base: 0;
-                --pg-spotlight-lit: 0.85;
+                --pg-spotlight-lit: 0.45;
             }
-            /* Cut by the page's edge: the logo runs on below the bottom. */
-            .footer .cut {
-                overflow: hidden;
+            /* Edge to edge, flush with the bottom: out of the footer's side
+               padding, and cut a little by the page's edge — as bugatti.com
+               has it. */
+            .footer .flush {
+                margin-inline: calc(-1 * clamp(1.25rem, 3vw, 3rem));
                 padding-bottom: 0;
+                overflow: hidden;
             }
-            .cut > * {
-                margin-bottom: -5%;
+            .flush > * {
+                margin-bottom: -1%;
             }
         </style>
         <script>
@@ -265,25 +269,24 @@
             </div>
         </footer>
 
-        <!-- 3 · Dark until found, cut by the edge — bugatti.com's footer, in
-             its manner. The logo is drawn as paths. -->
+        <!-- 3 · Bugatti: dark until found, edge to edge, flush with the
+             bottom — as bugatti.com's footer has it. The wordmark is drawn as
+             a path for this example; BUGATTI is its owner's trademark. -->
         <footer class="footer">
-            <h2>Dark until found, cut by the edge — 0% showing</h2>
+            <h2>Bugatti — dark until found, edge to edge</h2>
             <p>
-                As bugatti.com's footer does it: <code>--pg-spotlight-base: 0</code>, so the logo is not there
-                until the pointer comes near — then only around it, brighter (<code>--pg-spotlight-lit:
-                0.85</code>) — and it runs on below the page's bottom edge. The logo is drawn as paths: no font
-                to load.
+                As bugatti.com's footer has it: <code>--pg-spotlight-base: 0</code>, so the logo is not there
+                until the pointer comes near — then only around it, soft (<code>--pg-spotlight-lit:
+                0.45</code>). It runs from edge to edge and sits on the page's bottom, a little cut by it.
             </p>
             <div class="columns">
                 <div><b>Models</b><ul><li>One</li><li>Two</li></ul></div>
                 <div><b>Brand</b><ul><li>Heritage</li><li>Contact</li></ul></div>
                 <div><b>Owners</b><ul><li>Service</li><li>Parts</li></ul></div>
             </div>
-            <div class="closed cut" data-pg-spotlight data-pg-spotlight-grain>
-                <!-- "PlusGuard" in Roboto Black, tight, drawn as a path. -->
-                <svg viewBox="10.74 -150 881.88 151.95" role="img" aria-label="PlusGuard">
-                    <path d="M66.89-48.24L45.02-48.24L45.02 0L10.74 0L10.74-142.19L67.48-142.19Q83.79-142.19 96.34-136.18Q108.89-130.18 115.77-119.09Q122.66-108.01 122.66-93.95L122.66-93.95Q122.66-73.14 107.76-60.69Q92.87-48.24 66.89-48.24L66.89-48.24ZM45.02-115.72L45.02-74.71L67.48-74.71Q77.44-74.71 82.67-79.69Q87.89-84.67 87.89-93.75L87.89-93.75Q87.89-103.71 82.52-109.67Q77.15-115.63 67.87-115.72L67.87-115.72L45.02-115.72ZM169.12-150L169.12 0L136.11 0L136.11-150L169.12-150ZM248.30 0L247.32-11.43Q236.88 1.95 219.10 1.95L219.10 1.95Q201.72 1.95 192.78-8.15Q183.85-18.26 183.85-37.21L183.85-37.21L183.85-105.66L216.76-105.66L216.76-37.01Q216.76-23.44 229.94-23.44L229.94-23.44Q241.27-23.44 246.05-31.54L246.05-31.54L246.05-105.66L279.16-105.66L279.16 0L248.30 0ZM347.50-29.69L347.50-29.69Q347.50-33.89 343.11-36.43Q338.71-38.96 326.41-41.70Q314.10-44.43 306.09-48.88Q298.09-53.32 293.89-59.67Q289.69-66.02 289.69-74.22L289.69-74.22Q289.69-88.77 301.70-98.19Q313.71-107.62 333.14-107.62L333.14-107.62Q354.04-107.62 366.74-98.14Q379.43-88.67 379.43-73.24L379.43-73.24L346.43-73.24Q346.43-85.94 333.05-85.94L333.05-85.94Q327.87-85.94 324.36-83.06Q320.84-80.18 320.84-75.88L320.84-75.88Q320.84-71.48 325.14-68.75Q329.43-66.02 338.86-64.26Q348.28-62.50 355.41-60.06L355.41-60.06Q379.24-51.86 379.24-30.66L379.24-30.66Q379.24-16.21 366.40-7.13Q353.55 1.95 333.14 1.95L333.14 1.95Q319.57 1.95 308.93-2.93Q298.28-7.81 292.32-16.21Q286.37-24.61 286.37-33.89L286.37-33.89L317.13-33.89Q317.32-26.56 322.01-23.19Q326.70-19.82 334.02-19.82L334.02-19.82Q340.76-19.82 344.13-22.56Q347.50-25.29 347.50-29.69ZM507.54-75.98L507.54-17.58Q499.63-8.79 484.39-3.42Q469.16 1.95 451.00 1.95L451.00 1.95Q423.07 1.95 406.37-15.14Q389.67-32.23 388.50-62.70L388.50-62.70L388.40-75Q388.40-96.00 395.82-111.67Q403.24-127.34 417.06-135.79Q430.88-144.24 449.04-144.24L449.04-144.24Q475.61-144.24 490.30-132.08Q505-119.92 507.44-95.80L507.44-95.80L474.43-95.80Q472.68-107.71 466.82-112.79Q460.96-117.87 450.21-117.87L450.21-117.87Q437.32-117.87 430.29-106.93Q423.26-96.00 423.16-75.68L423.16-75.68L423.16-67.09Q423.16-45.80 430.44-35.11Q437.71-24.41 453.34-24.41L453.34-24.41Q466.72-24.41 473.26-30.37L473.26-30.37L473.26-52.44L449.43-52.44L449.43-75.98L507.54-75.98ZM584.86 0L583.89-11.43Q573.44 1.95 555.66 1.95L555.66 1.95Q538.28 1.95 529.35-8.15Q520.41-18.26 520.41-37.21L520.41-37.21L520.41-105.66L553.32-105.66L553.32-37.01Q553.32-23.44 566.50-23.44L566.50-23.44Q577.83-23.44 582.62-31.54L582.62-31.54L582.62-105.66L615.72-105.66L615.72 0L584.86 0ZM721.17 0L688.26 0Q686.50-3.22 685.14-9.47L685.14-9.47Q676.05 1.95 659.75 1.95L659.75 1.95Q644.80 1.95 634.36-7.08Q623.91-16.11 623.91-29.79L623.91-29.79Q623.91-46.97 636.60-55.76Q649.30-64.55 673.52-64.55L673.52-64.55L683.67-64.55L683.67-70.12Q683.67-84.67 671.07-84.67L671.07-84.67Q659.36-84.67 659.36-73.14L659.36-73.14L626.45-73.14Q626.45-88.48 639.48-98.05Q652.52-107.62 672.73-107.62Q692.95-107.62 704.67-97.75Q716.39-87.89 716.68-70.70L716.68-70.70L716.68-23.93Q716.88-9.38 721.17-1.66L721.17-1.66L721.17 0ZM667.66-21.48L667.66-21.48Q673.81-21.48 677.86-24.12Q681.91-26.76 683.67-30.08L683.67-30.08L683.67-46.97L674.10-46.97Q656.91-46.97 656.91-31.54L656.91-31.54Q656.91-27.05 659.94-24.27Q662.97-21.48 667.66-21.48ZM794.39-106.45L793.81-75.88L782.97-76.66Q767.44-76.66 763.05-66.89L763.05-66.89L763.05 0L730.14 0L730.14-105.66L761.00-105.66L762.07-92.09Q770.37-107.62 785.21-107.62L785.21-107.62Q790.49-107.62 794.39-106.45L794.39-106.45ZM794.67-53.61L794.67-53.61Q794.67-78.71 805.51-93.16Q816.35-107.62 835.78-107.62L835.78-107.62Q849.94-107.62 859.61-96.48L859.61-96.48L859.61-150L892.62-150L892.62 0L863.03 0L861.37-11.33Q851.21 1.95 835.59 1.95L835.59 1.95Q816.74 1.95 805.70-12.50Q794.67-26.95 794.67-53.61ZM827.68-57.62L827.58-51.56Q827.58-23.44 843.98-23.44L843.98-23.44Q854.92-23.44 859.61-32.62L859.61-32.62L859.61-72.85Q855.12-82.23 844.18-82.23L844.18-82.23Q828.95-82.23 827.68-57.62L827.68-57.62Z" />
+            <div class="closed flush" data-pg-spotlight data-pg-spotlight-grain>
+                <svg viewBox="0 0 2468.89 566.93" role="img" aria-label="Bugatti">
+                    <path d="M272.56 273.34c28.81-26.48 45.95-63.86 45.95-107.47 0-89.56-65.41-154.97-155.75-154.97H0v545.13h174.44c92.67 0 160.42-66.97 160.42-159.64 0-52.18-23.36-95.79-62.3-123.04ZM87.22 95.01h72.42c42.83 0 71.65 28.81 71.65 70.87s-28.81 70.87-71.65 70.87H87.22V95.01Zm84.1 376.91h-84.1V320.84h84.1c45.17 0 76.32 30.37 76.32 75.54s-31.15 75.54-76.32 75.54ZM648.69 406.51c0 44.39-31.93 76.32-76.32 76.32s-76.32-31.93-76.32-76.32V10.9h-87.22v389.38c0 96.56 68.53 166.65 163.54 166.65s163.54-70.09 163.54-166.65V10.9h-87.22v395.61ZM993.03 0c-95.01 0-163.54 70.09-163.54 166.65v233.62c0 96.56 68.53 166.65 163.54 166.65s163.54-70.09 163.54-166.65V241.41H993.03v84.11h76.32v80.99c0 44.39-31.93 76.32-76.32 76.32s-76.32-31.93-76.32-76.32V160.42c0-44.39 31.93-76.32 76.32-76.32s76.32 31.93 76.32 76.32v14.02h87.22v-7.79C1156.57 70.09 1088.04 0 993.03 0ZM1344.1 10.9l-125.38 545.12h86.44L1330.08 447h147.96l24.92 109.02h86.44L1464.03 10.9H1344.1Zm5.45 351.99 54.51-239.08 54.51 239.08h-109.02ZM1604.2 95.01h119.93l.78 461.02h85.66l.78-461.02h119.92V10.9H1604.2v84.11zM1976.59 95.01h119.93l.78 461.02h85.66l.78-461.02h119.92V10.9h-327.07v84.11zM2381.67 10.9h87.22v545.12h-87.22z" />
                 </svg>
             </div>
         </footer>
@@ -295,7 +298,8 @@
             <p>
                 The same "PlusGuard", as <code>&lt;text&gt;</code> in an SVG — Roboto Black, from Google Fonts. The
                 SVG's <code>viewBox</code> keeps it the width of the page, like a drawing; until the font has
-                loaded, a fallback stands in. No text cursor over it, nothing to select.
+                loaded, a fallback stands in. No text cursor over it, nothing to select. The grain is the same
+                fine one as above: it is measured in the page's pixels, not the drawing's.
             </p>
             <div class="columns">
                 <div><b>Engine</b><ul><li>Packages</li><li>Themes</li></ul></div>
@@ -310,7 +314,7 @@
         </footer>
 
         <script type="module">
-            import { initSpotlight } from "https://cdn.jsdelivr.net/gh/omisilli/spotlight@v1.0.0/dist/index.js";
+            import { initSpotlight } from "https://cdn.jsdelivr.net/gh/omisilli/spotlight@v1.1.0/dist/index.js";
 
             initSpotlight();
 

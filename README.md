@@ -12,7 +12,7 @@ dark, with or without Lenis; no dependencies.
 ```
 
 ```sh
-npm install github:omisilli/spotlight#v1.0.0
+npm install github:omisilli/spotlight#v1.1.0
 ```
 
 ```ts
@@ -31,14 +31,14 @@ Or the CSS from CSS, which lets you pick the cascade layer:
 ### Without a build step
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/omisilli/spotlight@v1.0.0/index.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/omisilli/spotlight@v1.1.0/index.css" />
 <script type="module">
-    import { initSpotlight } from "https://cdn.jsdelivr.net/gh/omisilli/spotlight@v1.0.0/dist/index.js";
+    import { initSpotlight } from "https://cdn.jsdelivr.net/gh/omisilli/spotlight@v1.1.0/dist/index.js";
     initSpotlight();
 </script>
 ```
 
-Pin the version (`@v1.0.0`) on a live site. A pinned URL never changes;
+Pin the version (`@v1.1.0`) on a live site. A pinned URL never changes;
 `@1` follows the newest 1.x release.
 
 ## Attributes
@@ -79,8 +79,8 @@ The logo is the box's first element — any of these:
 | ------------------------------------------ | ----------------------------------- | ----- | ---------------------- |
 | An SVG drawn as paths — **the best**       | Yes, where its shapes have no fill  | Yes   | The box's width        |
 | An SVG with `<text>` in a web font         | Yes                                 | Yes   | The box's width        |
-| An image — `<img src="logo.svg">`, a PNG   | No: the file's own colours          | No    | The box's width        |
-| Plain text — `<span>PlusGuard</span>`      | Yes, the text colour                | No    | Its own font size      |
+| An image — `<img src="logo.svg">`, a PNG   | No: the file's own colours          | Yes   | The box's width        |
+| Plain text — `<span>PlusGuard</span>`      | Yes, the text colour                | Yes   | Its own font size      |
 
 **Paths** need nothing to load and look the same everywhere: export the
 logo from your design tool, or turn its letters into outlines. **A font**
@@ -112,32 +112,38 @@ select — inside a link, the link's pointer.
 ```css
 .footer-logo {
     --pg-spotlight-base: 0;
-    --pg-spotlight-lit: 0.85;
+    --pg-spotlight-lit: 0.45; /* soft, as bugatti.com has it */
 }
 ```
 
 Anything between works too: `0.15` is a faint outline that lights up.
 
-### Cut by the edge
+### Edge to edge, on the bottom
 
-A logo that runs on below the page's bottom — as bugatti.com's footer has
-it — is the box cut short:
+As bugatti.com's footer has it: the logo runs from one side of the page to
+the other and sits on its bottom edge, a little cut by it. Take the box out
+of the footer's side padding, and cut it short:
 
 ```css
 .footer-logo {
+    margin-inline: calc(-1 * var(--footer-padding)); /* to the page's sides */
     overflow: hidden;
 }
 .footer-logo > * {
-    margin-bottom: -5%; /* how much is cut: a share of the width */
+    margin-bottom: -1%; /* how much the bottom cuts: a share of the width */
 }
 ```
 
 ## Grain
 
-`data-pg-spotlight-grain` gives an SVG's shapes a fine, filmic texture:
-they are cut from noise. The filter is added to the page once, by the
-script, whatever the number of logos. An image or plain text takes no
-grain.
+`data-pg-spotlight-grain` gives the logo a fine, filmic texture — dense,
+small dots, as on bugatti.com: it is cut from noise. The noise is measured
+in the page's pixels, not in the drawing's own units, so the grain is the
+same on every logo, whatever its `viewBox` — and on an image or plain text
+too. The filter is added to the page once, by the script.
+
+Grain is texture, not light: at full strength the dots stand out; with a
+softer `--pg-spotlight-lit` (0.4 or so) they read as a grey.
 
 ## Colour
 
@@ -210,6 +216,7 @@ however it scrolls.
 | -------------------------------------------- | -------------------------------------------------- |
 | Two copies of the SVG, `.logo-base` and `.logo-spot` | One; the script adds the copy                 |
 | `<filter id="noiseFilter">` in each SVG — the same id twice on a page | `data-pg-spotlight-grain`; one filter for the page |
+| The grain in the drawing's units: coarse on a small `viewBox`, fine on a large one | In the page's pixels: the same on every logo |
 | `opacity: .4` on each copy                   | `--pg-spotlight-base`, `--pg-spotlight-lit`        |
 | `--r1` / `--r2`                              | `--pg-spotlight-size` / `--pg-spotlight-fade`      |
 | The light stayed behind when the page scrolled | It stays on the pointer                          |
@@ -228,6 +235,6 @@ The logos are markup; logos rendered later are lit too. The copy is added
 after hydration, so the server's HTML and the browser's agree.
 
 See [`examples/react/Example.tsx`](examples/react/Example.tsx). A plain HTML
-version, with four footers — Gaga, Baibars, dark until found and cut by
-the edge, set in a font — a light/dark switch and a `?lenis` switch, is in
+version, with four footers — Gaga, Baibars, Bugatti (dark until found,
+edge to edge), set in a font — a light/dark switch and a `?lenis` switch, is in
 [`examples/static/index.html`](examples/static/index.html).
