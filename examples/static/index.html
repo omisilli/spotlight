@@ -1,0 +1,350 @@
+<!doctype html>
+<!-- Open by double-clicking: both halves load from jsDelivr, not from ../..
+     Pinned to this release, so the page and the code always match.
+     Add ?lenis to the address to try the same page with Lenis. -->
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>spotlight — example</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/omisilli/spotlight@v1.0.0/index.css" />
+        <!-- Only takes effect with ?lenis: it styles html.lenis. -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.css" />
+        <!-- Roboto Black — for the last footer, whose logo is set in type. -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@900&display=swap" />
+        <style>
+            :root {
+                --bg: #f6f6f4;
+                --fg: #18181b;
+                --muted: #6b6b72;
+                --line: #e4e4e0;
+                --footer: #ececea;
+                /* The Gaga logo's metal, for a light page: darker, so it reads. */
+                --metal-1: #4a4a4a;
+                --metal-2: #2b2b2b;
+                --metal-3: #6a6a6a;
+                --metal-4: #1c1c1c;
+                --metal-5: #2b2b2b;
+                --metal-6: #4a4a4a;
+                color-scheme: light;
+            }
+            /* Dark: as the system says, or as the switch at the top says. */
+            :root[data-scheme="dark"] {
+                --bg: #111113;
+                --fg: #ededef;
+                --muted: #9a9aa3;
+                --line: #2c2c31;
+                --footer: #000;
+                /* The Gaga site's own metal. */
+                --metal-1: #e0e0e0;
+                --metal-2: silver;
+                --metal-3: #f5f5f5;
+                --metal-4: #a8a8a8;
+                --metal-5: silver;
+                --metal-6: #e0e0e0;
+                color-scheme: dark;
+            }
+
+            * {
+                box-sizing: border-box;
+                margin: 0;
+            }
+            body {
+                font:
+                    16px/1.6 system-ui,
+                    -apple-system,
+                    "Segoe UI",
+                    Roboto,
+                    sans-serif;
+                color: var(--fg);
+                background: var(--bg);
+            }
+            code {
+                font:
+                    0.85em/1.4 ui-monospace,
+                    SFMono-Regular,
+                    Menlo,
+                    monospace;
+                padding: 0.15em 0.4em;
+                border-radius: 0.35em;
+                background: color-mix(in srgb, var(--fg) 8%, transparent);
+            }
+            a {
+                color: inherit;
+            }
+            header {
+                max-width: 46rem;
+                margin: 0 auto;
+                padding: 4rem 1.25rem 3rem;
+                display: grid;
+                gap: 1rem;
+            }
+            h1 {
+                font-size: 1.6rem;
+                line-height: 1.25;
+            }
+            header p {
+                color: var(--muted);
+            }
+            .row {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+                align-items: center;
+            }
+            .row button,
+            .row a {
+                font: inherit;
+                font-size: 0.9rem;
+                color: inherit;
+                padding: 0.35rem 0.8rem;
+                border: 1px solid var(--line);
+                border-radius: 0.6rem;
+                background: none;
+                cursor: pointer;
+                text-decoration: none;
+            }
+            .row button[aria-pressed="true"] {
+                background: var(--fg);
+                color: var(--bg);
+                border-color: var(--fg);
+            }
+
+            /* Each section: a footer as the sites have it — columns of links,
+               then the logo across the whole width at the very bottom. */
+            .footer {
+                background: var(--footer);
+                padding: 3.5rem clamp(1.25rem, 3vw, 3rem) 0;
+                display: grid;
+                gap: 3rem;
+                border-top: 1px solid var(--line);
+            }
+            .footer h2 {
+                font-size: 1rem;
+            }
+            .footer > p {
+                max-width: 40rem;
+                color: var(--muted);
+                margin-top: -2.5rem;
+            }
+            .columns {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+                gap: 2rem;
+                font-size: 0.9rem;
+            }
+            .columns ul {
+                list-style: none;
+                padding: 0;
+                display: grid;
+                gap: 0.5rem;
+                color: var(--muted);
+            }
+            .columns b {
+                display: block;
+                margin-bottom: 0.75rem;
+            }
+            .footer [data-pg-spotlight] {
+                padding-bottom: 1.5rem;
+            }
+
+            /* The Gaga logo: its gradient's colours come from the page, so
+               they turn with light and dark. */
+            .gaga stop:nth-child(1) { stop-color: var(--metal-1); }
+            .gaga stop:nth-child(2) { stop-color: var(--metal-2); }
+            .gaga stop:nth-child(3) { stop-color: var(--metal-3); }
+            .gaga stop:nth-child(4) { stop-color: var(--metal-4); }
+            .gaga stop:nth-child(5) { stop-color: var(--metal-5); }
+            .gaga stop:nth-child(6) { stop-color: var(--metal-6); }
+
+            /* Dark until the pointer finds it — and brighter when it does. */
+            .closed {
+                --pg-spotlight-base: 0;
+                --pg-spotlight-lit: 0.85;
+            }
+            /* Cut by the page's edge: the logo runs on below the bottom. */
+            .footer .cut {
+                overflow: hidden;
+                padding-bottom: 0;
+            }
+            .cut > * {
+                margin-bottom: -5%;
+            }
+        </style>
+        <script>
+            // Light or dark before the first paint: the switch's choice, or
+            // the system's.
+            (() => {
+                let choice = "system";
+                try {
+                    choice = localStorage.getItem("spotlight-scheme") || "system";
+                } catch {}
+                const dark = choice === "dark" || (choice === "system" && matchMedia("(prefers-color-scheme: dark)").matches);
+                document.documentElement.dataset.scheme = dark ? "dark" : "light";
+                document.documentElement.dataset.choice = choice;
+            })();
+        </script>
+    </head>
+    <body>
+        <header>
+            <h1>spotlight</h1>
+            <p>
+                Move the mouse over the logos at the bottom of each footer: a circle of light follows it. The
+                logo is written once; the script lays a lit copy over it and opens it only around the pointer —
+                and keeps it there while the page scrolls. On a touch screen there is no pointer, so no light:
+                the logos are hidden there — all but Baibars, which asks to stay
+                (<code>data-pg-spotlight-touch</code>).
+            </p>
+            <div class="row" role="group" aria-label="Colour scheme">
+                <button type="button" data-choice="system">System</button>
+                <button type="button" data-choice="light">Light</button>
+                <button type="button" data-choice="dark">Dark</button>
+                <a id="toggle" href="?lenis">Try with Lenis</a>
+            </div>
+            <p id="mode"></p>
+        </header>
+
+        <!-- 1 · Gaga: its own metal gradient, grain, 40% showing. -->
+        <footer class="footer">
+            <h2>Gaga — metal, grain, 40% showing</h2>
+            <p>
+                <code>data-pg-spotlight data-pg-spotlight-grain</code>. The logo's own gradient fills it; its
+                colours come from the page, so they turn with light and dark.
+            </p>
+            <div class="columns">
+                <div><b>Products</b><ul><li>All products</li></ul></div>
+                <div><b>Company</b><ul><li>About us</li><li>Contact</li></ul></div>
+                <div><b>Media</b><ul><li>Brand</li><li>Blog</li></ul></div>
+                <div><b>Guides</b><ul><li>All guides</li><li>Videos</li></ul></div>
+                <div><b>Support</b><ul><li>Support centre</li><li>Warranty</li></ul></div>
+            </div>
+            <div class="gaga" data-pg-spotlight data-pg-spotlight-grain>
+                <svg viewBox="0 0 1418.1 219.194" role="img" aria-label="Gaga">
+                    <defs>
+                        <linearGradient id="gaga-metal" x1="1.035" y1="0.5" x2="0" y2="0.5">
+                            <stop offset="0" />
+                            <stop offset="0.204" />
+                            <stop offset="0.412" />
+                            <stop offset="0.609" />
+                            <stop offset="0.807" />
+                            <stop offset="1" />
+                        </linearGradient>
+                    </defs>
+                    <path fill="url(#gaga-metal)" transform="translate(-33.304 -61.763)" d="M933.694,280.957c-126.551,0-145.928-15.138-145.928-105.964v-4.844c0-93.248,20.588-108.386,145.322-108.386h15.744c93.248,0,107.175,3.633,107.175,26.037v7.266c0,12.11-7.266,16.954-19.376,16.954H928.85c-72.056,0-77.505,4.239-77.505,58.735v7.266c0,52.68,4.844,55.706,77.505,55.706h18.165c50.863,0,54.5-3.632,54.5-15.743V205.268c0-5.449-3.028-8.477-10.293-8.477h-55.1c-12.11,0-19.376-4.238-19.376-16.954v-9.082c0-12.11,7.266-16.954,19.376-16.954h94.46c24.22,0,32.7,9.082,32.7,27.247v22.4c0,56.312-6.66,77.505-111.413,77.505Zm-754.463,0C52.68,280.957,33.3,265.819,33.3,174.992v-4.844C33.3,76.9,53.891,61.763,178.626,61.763h15.743c93.248,0,107.176,3.633,107.176,26.037v7.266c0,12.11-7.267,16.954-18.771,16.954H174.992c-72.055,0-77.505,4.239-77.505,58.735v7.266c0,52.68,4.845,55.706,77.505,55.706h18.166c50.863,0,54.5-3.632,54.5-15.743V205.268c0-5.449-3.028-8.477-10.294-8.477h-55.1c-12.11,0-19.377-4.238-19.377-16.954v-9.082c0-12.11,7.267-16.954,19.377-16.954h94.459c24.221,0,32.7,9.082,32.7,27.247v23.009l-.606-.606c0,56.312-6.661,77.505-111.414,77.505Zm1224.338-1.817c-12.11,0-15.138-4.238-21.8-16.348l-7.871-14.532h.606c-3.028-6.055-5.45-7.871-13.321-7.871H1243.714c-7.871,0-10.293,1.211-13.321,7.871l-7.872,14.532c-6.66,13.322-9.688,16.348-22.4,16.348h-27.853c-10.9,0-17.56-5.449-17.56-13.927s1.211-7.871,3.633-12.11l97.487-176.2c5.449-9.689,10.293-13.322,21.192-13.322h50.863c10.9,0,15.744,3.633,21.193,13.322l98.7,176.2c2.422,4.844,3.633,8.477,3.633,12.11,0,9.083-7.871,13.927-17.56,13.927ZM1297,114.441l-34.514,69.028a15.791,15.791,0,0,0-1.816,6.661c0,3.028,2.422,5.45,7.871,5.45h69.028c5.449,0,7.871-2.422,7.871-5.45s-.606-3.633-1.816-6.661l-34.514-69.028H1307.9c-1.816-3.632-3.633-4.844-5.45-4.844S1298.816,110.809,1297,114.441Zm-648.5,164.7c-12.109,0-15.137-4.238-21.8-16.348l-7.871-14.532h.606c-3.028-6.055-5.449-7.871-13.322-7.871H488.646c-7.871,0-10.294,1.211-13.322,7.871l-7.871,14.532c-6.66,13.322-9.688,16.348-22.4,16.348H417.2c-10.9,0-17.56-5.449-17.56-13.927s1.211-7.871,3.633-12.11L500.756,76.9c5.45-9.689,10.294-13.322,21.193-13.322h50.863c10.9,0,15.744,3.633,21.193,13.322l98.7,176.2c2.422,4.844,3.633,8.477,3.633,12.11,0,9.083-7.872,13.927-17.56,13.927Zm-105.963-164.7-34.514,69.028a15.779,15.779,0,0,0-1.816,6.661c0,3.028,2.422,5.45,7.871,5.45H583.1c5.45,0,7.872-2.422,7.872-5.45s-.606-3.633-1.817-6.661l-34.514-69.028h-1.21c-1.816-3.632-3.633-4.844-5.45-4.844S544.352,110.809,542.536,114.441Zm520.736,89.01v0Z" />
+                </svg>
+            </div>
+        </footer>
+
+        <!-- 2 · Baibars: the text colour, grain, 40% showing. -->
+        <footer class="footer">
+            <h2>Baibars — grain, 40% showing, kept on touch screens</h2>
+            <p>
+                The same, in the text colour: <code>--pg-spotlight-color</code> is <code>currentColor</code> unless
+                set — dark on a light page, light on a dark one. <code>data-pg-spotlight-touch</code>: on a phone
+                it stays, at <code>--pg-spotlight-touch</code> (0.2), where the others are hidden.
+            </p>
+            <div class="columns">
+                <div><b>Products</b><ul><li>Industrial</li><li>Test fly</li></ul></div>
+                <div><b>Corporate</b><ul><li>Cooperation</li><li>Careers</li></ul></div>
+                <div><b>Media</b><ul><li>Newsroom</li><li>Blog</li></ul></div>
+                <div><b>Trust</b><ul><li>Trust centre</li><li>Fly safe</li></ul></div>
+                <div><b>Dealers</b><ul><li>Become a dealer</li></ul></div>
+            </div>
+            <div data-pg-spotlight data-pg-spotlight-grain data-pg-spotlight-touch>
+                <svg viewBox="0 0 1920.672 401.16" role="img" aria-label="Baibars">
+                    <path d="M237.949,346.756a47.654,47.654,0,0,1-47.625,47.625H47.581V354.248L0,401.115V47.581L47.581,0V190.368l33.98-33.98H190.324a47.654,47.654,0,0,1,47.625,47.625V346.8Zm-47.581,6.778V197.146H47.581V353.535H190.368Z" />
+                    <path transform="translate(250.489 121.249)" d="M310.4,273.088H262.823V238.395l-40.8,34.693H120.035A47.654,47.654,0,0,1,72.41,225.463V177.882a47.655,47.655,0,0,1,47.626-47.625H256L215.2,170.39H120.035v61.851H262.823V75.853H72.455l40.8-40.8H262.823a45.824,45.824,0,0,1,33.668,13.958,45.925,45.925,0,0,1,13.958,33.668V273.044Z" />
+                    <path transform="translate(508.969 47.462)" d="M194.711,68.124H147.13V13.72h47.581Zm0,278.752H147.13V142.906l47.581-47.581Z" />
+                    <path transform="translate(624.96)" d="M418.654,346.756a47.655,47.655,0,0,1-47.625,47.625H228.241V354.248L180.66,401.16V47.581L228.241,0V190.368l33.98-33.98H370.984a47.655,47.655,0,0,1,47.625,47.625V346.8Zm-47.581,6.778V197.146H228.286V353.535Z" />
+                    <path transform="translate(875.484 121.249)" d="M491.074,273.088H443.493V238.395l-40.8,34.693H300.706a47.578,47.578,0,0,1-47.581-47.625V177.882a47.578,47.578,0,0,1,47.581-47.625H436.67l-40.8,40.134H300.661v61.851H443.448V75.853H253.08l40.8-40.8H443.448a45.824,45.824,0,0,1,33.668,13.958,45.926,45.926,0,0,1,13.958,33.668V273.044Z" />
+                    <path transform="translate(1133.964 121.284)" d="M518.124,130.266H470.543v-54.4H375.381V273.009H327.8V35.06h47.581V69.04l33.98-33.98h61.182A45.824,45.824,0,0,1,504.21,49.018a45.884,45.884,0,0,1,13.913,33.668v47.581Z" />
+                    <path transform="translate(1331.733 121.318)" d="M588.939,35.07l-41.472,40.8H432.551v54.4h95.206A47.578,47.578,0,0,1,575.338,177.9v47.581a47.578,47.578,0,0,1-47.581,47.626H384.97v-40.8H527.757V171.124H432.551A47.578,47.578,0,0,1,384.97,123.5V82.7a45.956,45.956,0,0,1,13.913-33.668A45.925,45.925,0,0,1,432.551,35.07H588.939Z" />
+                </svg>
+            </div>
+        </footer>
+
+        <!-- 3 · Dark until found, cut by the edge — bugatti.com's footer, in
+             its manner. The logo is drawn as paths. -->
+        <footer class="footer">
+            <h2>Dark until found, cut by the edge — 0% showing</h2>
+            <p>
+                As bugatti.com's footer does it: <code>--pg-spotlight-base: 0</code>, so the logo is not there
+                until the pointer comes near — then only around it, brighter (<code>--pg-spotlight-lit:
+                0.85</code>) — and it runs on below the page's bottom edge. The logo is drawn as paths: no font
+                to load.
+            </p>
+            <div class="columns">
+                <div><b>Models</b><ul><li>One</li><li>Two</li></ul></div>
+                <div><b>Brand</b><ul><li>Heritage</li><li>Contact</li></ul></div>
+                <div><b>Owners</b><ul><li>Service</li><li>Parts</li></ul></div>
+            </div>
+            <div class="closed cut" data-pg-spotlight data-pg-spotlight-grain>
+                <!-- "PlusGuard" in Roboto Black, tight, drawn as a path. -->
+                <svg viewBox="10.74 -150 881.88 151.95" role="img" aria-label="PlusGuard">
+                    <path d="M66.89-48.24L45.02-48.24L45.02 0L10.74 0L10.74-142.19L67.48-142.19Q83.79-142.19 96.34-136.18Q108.89-130.18 115.77-119.09Q122.66-108.01 122.66-93.95L122.66-93.95Q122.66-73.14 107.76-60.69Q92.87-48.24 66.89-48.24L66.89-48.24ZM45.02-115.72L45.02-74.71L67.48-74.71Q77.44-74.71 82.67-79.69Q87.89-84.67 87.89-93.75L87.89-93.75Q87.89-103.71 82.52-109.67Q77.15-115.63 67.87-115.72L67.87-115.72L45.02-115.72ZM169.12-150L169.12 0L136.11 0L136.11-150L169.12-150ZM248.30 0L247.32-11.43Q236.88 1.95 219.10 1.95L219.10 1.95Q201.72 1.95 192.78-8.15Q183.85-18.26 183.85-37.21L183.85-37.21L183.85-105.66L216.76-105.66L216.76-37.01Q216.76-23.44 229.94-23.44L229.94-23.44Q241.27-23.44 246.05-31.54L246.05-31.54L246.05-105.66L279.16-105.66L279.16 0L248.30 0ZM347.50-29.69L347.50-29.69Q347.50-33.89 343.11-36.43Q338.71-38.96 326.41-41.70Q314.10-44.43 306.09-48.88Q298.09-53.32 293.89-59.67Q289.69-66.02 289.69-74.22L289.69-74.22Q289.69-88.77 301.70-98.19Q313.71-107.62 333.14-107.62L333.14-107.62Q354.04-107.62 366.74-98.14Q379.43-88.67 379.43-73.24L379.43-73.24L346.43-73.24Q346.43-85.94 333.05-85.94L333.05-85.94Q327.87-85.94 324.36-83.06Q320.84-80.18 320.84-75.88L320.84-75.88Q320.84-71.48 325.14-68.75Q329.43-66.02 338.86-64.26Q348.28-62.50 355.41-60.06L355.41-60.06Q379.24-51.86 379.24-30.66L379.24-30.66Q379.24-16.21 366.40-7.13Q353.55 1.95 333.14 1.95L333.14 1.95Q319.57 1.95 308.93-2.93Q298.28-7.81 292.32-16.21Q286.37-24.61 286.37-33.89L286.37-33.89L317.13-33.89Q317.32-26.56 322.01-23.19Q326.70-19.82 334.02-19.82L334.02-19.82Q340.76-19.82 344.13-22.56Q347.50-25.29 347.50-29.69ZM507.54-75.98L507.54-17.58Q499.63-8.79 484.39-3.42Q469.16 1.95 451.00 1.95L451.00 1.95Q423.07 1.95 406.37-15.14Q389.67-32.23 388.50-62.70L388.50-62.70L388.40-75Q388.40-96.00 395.82-111.67Q403.24-127.34 417.06-135.79Q430.88-144.24 449.04-144.24L449.04-144.24Q475.61-144.24 490.30-132.08Q505-119.92 507.44-95.80L507.44-95.80L474.43-95.80Q472.68-107.71 466.82-112.79Q460.96-117.87 450.21-117.87L450.21-117.87Q437.32-117.87 430.29-106.93Q423.26-96.00 423.16-75.68L423.16-75.68L423.16-67.09Q423.16-45.80 430.44-35.11Q437.71-24.41 453.34-24.41L453.34-24.41Q466.72-24.41 473.26-30.37L473.26-30.37L473.26-52.44L449.43-52.44L449.43-75.98L507.54-75.98ZM584.86 0L583.89-11.43Q573.44 1.95 555.66 1.95L555.66 1.95Q538.28 1.95 529.35-8.15Q520.41-18.26 520.41-37.21L520.41-37.21L520.41-105.66L553.32-105.66L553.32-37.01Q553.32-23.44 566.50-23.44L566.50-23.44Q577.83-23.44 582.62-31.54L582.62-31.54L582.62-105.66L615.72-105.66L615.72 0L584.86 0ZM721.17 0L688.26 0Q686.50-3.22 685.14-9.47L685.14-9.47Q676.05 1.95 659.75 1.95L659.75 1.95Q644.80 1.95 634.36-7.08Q623.91-16.11 623.91-29.79L623.91-29.79Q623.91-46.97 636.60-55.76Q649.30-64.55 673.52-64.55L673.52-64.55L683.67-64.55L683.67-70.12Q683.67-84.67 671.07-84.67L671.07-84.67Q659.36-84.67 659.36-73.14L659.36-73.14L626.45-73.14Q626.45-88.48 639.48-98.05Q652.52-107.62 672.73-107.62Q692.95-107.62 704.67-97.75Q716.39-87.89 716.68-70.70L716.68-70.70L716.68-23.93Q716.88-9.38 721.17-1.66L721.17-1.66L721.17 0ZM667.66-21.48L667.66-21.48Q673.81-21.48 677.86-24.12Q681.91-26.76 683.67-30.08L683.67-30.08L683.67-46.97L674.10-46.97Q656.91-46.97 656.91-31.54L656.91-31.54Q656.91-27.05 659.94-24.27Q662.97-21.48 667.66-21.48ZM794.39-106.45L793.81-75.88L782.97-76.66Q767.44-76.66 763.05-66.89L763.05-66.89L763.05 0L730.14 0L730.14-105.66L761.00-105.66L762.07-92.09Q770.37-107.62 785.21-107.62L785.21-107.62Q790.49-107.62 794.39-106.45L794.39-106.45ZM794.67-53.61L794.67-53.61Q794.67-78.71 805.51-93.16Q816.35-107.62 835.78-107.62L835.78-107.62Q849.94-107.62 859.61-96.48L859.61-96.48L859.61-150L892.62-150L892.62 0L863.03 0L861.37-11.33Q851.21 1.95 835.59 1.95L835.59 1.95Q816.74 1.95 805.70-12.50Q794.67-26.95 794.67-53.61ZM827.68-57.62L827.58-51.56Q827.58-23.44 843.98-23.44L843.98-23.44Q854.92-23.44 859.61-32.62L859.61-32.62L859.61-72.85Q855.12-82.23 844.18-82.23L844.18-82.23Q828.95-82.23 827.68-57.62L827.68-57.62Z" />
+                </svg>
+            </div>
+        </footer>
+
+        <!-- 4 · Set in a font: the same logo as text, in Roboto Black from
+             Google Fonts. -->
+        <footer class="footer">
+            <h2>Set in a font — 40% showing</h2>
+            <p>
+                The same "PlusGuard", as <code>&lt;text&gt;</code> in an SVG — Roboto Black, from Google Fonts. The
+                SVG's <code>viewBox</code> keeps it the width of the page, like a drawing; until the font has
+                loaded, a fallback stands in. No text cursor over it, nothing to select.
+            </p>
+            <div class="columns">
+                <div><b>Engine</b><ul><li>Packages</li><li>Themes</li></ul></div>
+                <div><b>Docs</b><ul><li>Guides</li><li>Examples</li></ul></div>
+                <div><b>Company</b><ul><li>About</li><li>Contact</li></ul></div>
+            </div>
+            <div data-pg-spotlight data-pg-spotlight-grain>
+                <svg viewBox="10.74 -150 881.88 151.95" role="img" aria-label="PlusGuard">
+                    <text font-family="Roboto, system-ui, sans-serif" font-weight="900" font-size="200" letter-spacing="-5">PlusGuard</text>
+                </svg>
+            </div>
+        </footer>
+
+        <script type="module">
+            import { initSpotlight } from "https://cdn.jsdelivr.net/gh/omisilli/spotlight@v1.0.0/dist/index.js";
+
+            initSpotlight();
+
+            // The colour-scheme switch: kept for the next visit.
+            const root = document.documentElement;
+            const buttons = document.querySelectorAll("[data-choice]");
+            const show = () => buttons.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.choice === root.dataset.choice)));
+            const system = matchMedia("(prefers-color-scheme: dark)");
+            const apply = (choice) => {
+                root.dataset.choice = choice;
+                const dark = choice === "dark" || (choice === "system" && system.matches);
+                root.dataset.scheme = dark ? "dark" : "light";
+                try {
+                    localStorage.setItem("spotlight-scheme", choice);
+                } catch {}
+                show();
+            };
+            buttons.forEach((b) => b.addEventListener("click", () => apply(b.dataset.choice)));
+            system.addEventListener("change", () => root.dataset.choice === "system" && apply("system"));
+            show();
+
+            // ?lenis: the same page with Lenis. Nothing to hand over — the light
+            // follows the page however it scrolls.
+            const mode = document.getElementById("mode");
+            const toggle = document.getElementById("toggle");
+            if (new URLSearchParams(location.search).has("lenis")) {
+                const { default: Lenis } = await import("https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.mjs");
+                new Lenis({ autoRaf: true });
+                mode.textContent = "This page runs Lenis now.";
+                toggle.textContent = "Try without Lenis";
+                toggle.href = "?";
+            } else {
+                mode.textContent = "This page runs without Lenis.";
+            }
+        </script>
+    </body>
+</html>

@@ -1,0 +1,106 @@
+/*
+ * spotlight — the CSS half: the two layers, the circle, the grain.
+ *
+ * Set anywhere above the logo — media queries welcome:
+ *   --pg-spotlight-color   the logo's colour, where its own SVG has none.
+ *                          The text colour — dark on a light page, light
+ *                          on a dark one
+ *   --pg-spotlight-base    how much of the logo shows without the light.
+ *                          0.4; 0 keeps it dark until the pointer finds it
+ *   --pg-spotlight-lit     how bright it is in the light. 0.6
+ *   --pg-spotlight-size    the circle's fully lit middle. 160px
+ *   --pg-spotlight-fade    where its soft edge ends. 420px
+ *   --pg-spotlight-touch   how much shows on a touch screen, with
+ *                          data-pg-spotlight-touch. 0.2
+ *
+ * On a touch screen there is no pointer, so no light: the logo is hidden
+ * there — gone from the layout — unless data-pg-spotlight-touch keeps it.
+ */
+
+@property --pg-spotlight-size {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 160px;
+}
+
+@property --pg-spotlight-fade {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 420px;
+}
+
+/* The two layers in one cell: the lit copy over the logo. */
+:where([data-pg-spotlight]) {
+    display: grid;
+}
+:where([data-pg-spotlight]) > * {
+    grid-area: 1 / 1;
+}
+/* A drawing or an image fills the width; plain text keeps its own size. */
+:where([data-pg-spotlight]) > :is(svg, img) {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+:where([data-pg-spotlight]) > svg {
+    fill: var(--pg-spotlight-color, currentColor);
+}
+
+/* A logo set in type is still a picture: no text cursor over it, nothing
+   to select. Inside a link, the link's pointer. */
+:where([data-pg-spotlight]) > * {
+    user-select: none;
+}
+:where([data-pg-spotlight]) > * {
+    cursor: default;
+}
+:where(a) :where([data-pg-spotlight]) > * {
+    cursor: pointer;
+}
+
+/* The logo itself: dim. */
+:where([data-pg-spotlight]) > :not([data-pg-spotlight-lit]) {
+    opacity: var(--pg-spotlight-base, 0.4);
+}
+
+/* The lit copy: only inside the circle around the pointer, and only while
+   a mouse is on the page. */
+:where([data-pg-spotlight]) > [data-pg-spotlight-lit] {
+    opacity: 0;
+    pointer-events: none;
+    mask: radial-gradient(
+        circle at var(--pg-spotlight-x, -9999px) var(--pg-spotlight-y, -9999px),
+        #000 var(--pg-spotlight-size),
+        transparent var(--pg-spotlight-fade)
+    );
+    transition: opacity 0.4s;
+}
+:where([data-pg-spotlight-active="true"]) > [data-pg-spotlight-lit] {
+    opacity: var(--pg-spotlight-lit, 0.6);
+}
+
+/* The grain: the shapes cut from fine noise. The filter is added to the
+   page by index.ts. */
+:where([data-pg-spotlight-grain]) > svg :is(path, rect, circle, ellipse, polygon, polyline, line, text, use) {
+    filter: url(#pg-spotlight-grain);
+}
+
+/* No pointer — a touch screen: no light, so no logo — unless the box asks
+   to stay, at its own strength. */
+@media (hover: none) {
+    :where([data-pg-spotlight]):not([data-pg-spotlight-touch]) {
+        display: none;
+    }
+    :where([data-pg-spotlight-touch]) > :not([data-pg-spotlight-lit]) {
+        opacity: var(--pg-spotlight-touch, 0.2);
+    }
+    :where([data-pg-spotlight]) > [data-pg-spotlight-lit] {
+        display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :where([data-pg-spotlight]) > [data-pg-spotlight-lit] {
+        transition: none;
+    }
+}
