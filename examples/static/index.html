@@ -71,18 +71,19 @@
             a {
                 color: inherit;
             }
+            /* Aligned with the footers below: the same side padding. */
             header {
-                max-width: 46rem;
-                margin: 0 auto;
-                padding: 4rem 1.25rem 3rem;
+                padding: 4rem clamp(1.25rem, 3vw, 3rem) 3rem;
                 display: grid;
                 gap: 1rem;
+                justify-items: start;
             }
             h1 {
                 font-size: 1.6rem;
                 line-height: 1.25;
             }
             header p {
+                max-width: 46rem;
                 color: var(--muted);
             }
             .row {

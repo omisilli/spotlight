@@ -2,8 +2,8 @@
 
 A large logo lit by the pointer — the wordmark across the bottom of a
 footer, dim and grainy, bright in a soft circle around the cursor. Or dark
-until the pointer finds it. For any SVG, from HTML attributes; light and
-dark, with or without Lenis; no dependencies.
+until the pointer finds it. For an SVG, an image or plain text, from HTML
+attributes; light and dark, with or without Lenis; no dependencies.
 
 ```html
 <div data-pg-spotlight data-pg-spotlight-grain>
@@ -46,7 +46,7 @@ Pin the version (`@v1.2.0`) on a live site. A pinned URL never changes;
 | Attribute                  | On       | What                                                      |
 | -------------------------- | -------- | --------------------------------------------------------- |
 | `data-pg-spotlight`        | The box  | Lights its first element — the logo                       |
-| `data-pg-spotlight-grain`  | The box  | A fine, filmic texture on an SVG's shapes                 |
+| `data-pg-spotlight-grain`  | The box  | A fine, filmic texture on the logo — see [Grain](#grain)  |
 | `data-pg-spotlight-touch`  | The box  | Keeps the logo on touch screens, where it is hidden by default |
 
 Everything else — how bright, how big — is CSS: see [CSS variables](#css-variables).
@@ -62,14 +62,25 @@ layer** — and shows that copy only inside a circle around the pointer:
 | The lit copy    | Only around the pointer        | `--pg-spotlight-lit` — 0.6          |
 
 The circle is fully lit to `--pg-spotlight-size` (160px) and fades out by
-`--pg-spotlight-fade` (420px). It follows the pointer, and stays on it
-while the page scrolls under a still mouse — native scrolling or Lenis.
-When the mouse leaves the page, the light goes out.
+`--pg-spotlight-fade` (420px) — or is as wide as the logo, see [The
+look](#the-look-how-much-shows-how-wide-the-light). It follows the pointer,
+and stays on it while the page scrolls under a still mouse — native
+scrolling or Lenis.
+
+- **A mouse or a pen** lights it; a finger does not (see [Touch
+  screens](#touch-screens)).
+- **The light comes up** when the pointer first moves on the page, and
+  **goes out**, fading, when it leaves the window.
+- **Only logos on screen** follow the pointer, at most once a frame — a
+  footer far below costs nothing while you read the top of the page.
+- **Logos rendered later** — another route, a section loaded on demand —
+  are lit as they arrive.
 
 The copy has no ids — a gradient, a clip or a pattern it uses is found in
-your logo — and is hidden from screen readers. Give your logo
-`role="img"` and an `aria-label`, or `aria-hidden="true"` if the name is
-already said elsewhere.
+your logo — and is hidden from screen readers; an image's copy has an empty
+`alt`. Name the logo once: `role="img"` and an `aria-label` on an SVG, an
+`alt` on an image — or `aria-hidden="true"` if the name is already said
+elsewhere.
 
 ## What can be lit
 
@@ -93,7 +104,7 @@ text (`font-size`, `clamp()`), not by the box's width.
 ```html
 <!-- Set in a font: the viewBox fits the word; the font loads as any web font. -->
 <div data-pg-spotlight data-pg-spotlight-grain>
-    <svg viewBox="0 -150 900 155" role="img" aria-label="PlusGuard">
+    <svg viewBox="10.74 -150 881.88 151.95" role="img" aria-label="PlusGuard">
         <text font-family="Roboto" font-weight="900" font-size="200" letter-spacing="-5">PlusGuard</text>
     </svg>
 </div>
@@ -162,9 +173,10 @@ softer `--pg-spotlight-lit` (0.4 or so) they read as a grey.
 
 ## Colour
 
-Without a colour of its own, the logo takes `--pg-spotlight-color` — the
+Without a colour of its own, an SVG logo takes `--pg-spotlight-color` — the
 text colour unless set — so it is dark on a light page and light on a dark
-one. A logo with its own fills keeps them: a gradient, two colours.
+one. A logo with its own fills keeps them: a gradient, two colours. Plain
+text takes the text colour (`color`); an image keeps the file's.
 
 A gradient can turn with light and dark too, if its colours come from
 the page:
@@ -184,8 +196,8 @@ the page:
 ## Touch screens
 
 A finger has no "over" — no light, and nothing to find. So on a touch
-screen (`hover: none`) the logo is **hidden**, gone from the layout, as the
-Gaga and Baibars sites did on phones.
+screen (`hover: none`) the logo is **hidden**, gone from the layout — as
+the Gaga and Baibars sites hid it on phones.
 
 To keep it there, without the light, at `--pg-spotlight-touch` (0.2):
 
@@ -248,7 +260,10 @@ useEffect(() => initSpotlight(), []);
 ```
 
 The logos are markup; logos rendered later are lit too. The copy is added
-after hydration, so the server's HTML and the browser's agree.
+after hydration, so the server's HTML and the browser's agree; the cleanup
+takes the copies away again. If `initSpotlight` is called again before the
+first cleanup runs (React remounting in development), only the newest call
+answers.
 
 See [`examples/react/Example.tsx`](examples/react/Example.tsx). A plain HTML
 version, with four footers — Gaga, Baibars, Bugatti (dark until found,
