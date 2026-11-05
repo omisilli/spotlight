@@ -5,8 +5,8 @@ import { initSpotlight } from "@plusguard/spotlight";
 import "@plusguard/spotlight/index.css";
 
 /* Mount once, high in the tree. Logos rendered later — another route, a
-   section loaded on demand — are lit too. With Lenis there is nothing to
-   hand over: the light follows the page however it scrolls. */
+   section loaded on demand — are lit too. Lenis or not makes no
+   difference: the light follows the page however it scrolls. */
 export function Spotlights() {
     useEffect(() => initSpotlight(), []);
     return null;
@@ -123,7 +123,7 @@ export function FontFooter() {
     return (
         <footer>
             {/* … columns of links … */}
-            <div data-pg-spotlight data-pg-spotlight-grain>
+            <div className="flush" data-pg-spotlight data-pg-spotlight-grain>
                 <svg viewBox="10.74 -150 881.88 151.95" role="img" aria-label="PlusGuard">
                     {/* style, not the font-family attribute: an attribute takes no var(). */}
                     <text style={{ fontFamily: "var(--font-roboto), Roboto, system-ui, sans-serif" }} fontWeight="900" fontSize="200" letterSpacing="-5">

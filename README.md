@@ -221,9 +221,10 @@ With reduced motion asked for, the light comes and goes without fading.
 
 ## Lenis
 
-Nothing to hand over. The light is placed from the pointer and the logo's
-place on the screen, every frame something moves — so it follows the page
-however it scrolls.
+Makes no difference — nothing to hand over. The light is placed from the
+pointer and the logo's place on the screen, every frame something moves,
+so it follows the page however it scrolls: natively, with Lenis, or with
+anything else.
 
 ## From the old footer
 
@@ -252,5 +253,5 @@ after hydration, so the server's HTML and the browser's agree.
 See [`examples/react/Example.tsx`](examples/react/Example.tsx). A plain HTML
 version, with four footers — Gaga, Baibars, Bugatti (dark until found,
 edge to edge, with a switch between its wide soft light and a small
-circle), set in a font — a light/dark switch and a `?lenis` switch, is in
+circle), set in a font and edge to edge — and a light/dark switch, is in
 [`examples/static/index.html`](examples/static/index.html).
