@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { initSpotlight } from "@plusguard/spotlight";
 import "@plusguard/spotlight/index.css";
 
@@ -60,6 +60,112 @@ function LightSwitch({ light, set, choices }: { light: Light; set: (l: Light) =>
                 </button>
             ))}
         </div>
+    );
+}
+
+/*
+ * Every option on one logo — the playground. Each pick sets the box; the
+ * CSS for what is picked is written below it. None of it needs more than
+ * CSS: variables on the box, and the lit copy styled through
+ * [data-pg-spotlight-lit]:
+ *
+ *   .play[data-colour="brand"]   { --pg-spotlight-color: #ff0033; }
+ *   .play[data-colour="gold"] > [data-pg-spotlight-lit] { fill: #e0b34a; }
+ *   .play[data-colour="outline"] > svg:not([data-pg-spotlight-lit]) { filter: none; }
+ *   .play[data-colour="outline"] > svg:not([data-pg-spotlight-lit]) path {
+ *       fill: none; stroke: currentColor; stroke-width: 1px; vector-effect: non-scaling-stroke;
+ *   }
+ *   .play[data-blend="on"] > [data-pg-spotlight-lit] { mix-blend-mode: screen; }
+ */
+const BASE = { dim: "0.4", ghost: "0.12", dark: "0" };
+const SHAPE = {
+    "small soft": ["160px", "420px"],
+    "small hard": ["200px", "210px"],
+    "wide soft": ["0%", "60%"],
+    "wide hard": ["45%", "47%"],
+} as const;
+const GROUPS = {
+    base: ["Without the light", [["dim", "Dim — 0.4"], ["ghost", "A ghost — 0.12"], ["dark", "Dark — 0"]]],
+    light: ["The light", [["small", "A small circle"], ["wide", "Wide and soft"]]],
+    edge: ["Its edge", [["soft", "Soft"], ["hard", "Hard — a torch"]]],
+    lit: ["In the light", [["0.4", "0.4"], ["0.6", "0.6"], ["0.85", "0.85"]]],
+    colour: ["Colour", [["text", "The text colour"], ["brand", "A brand colour"], ["gold", "Gold in the light"], ["outline", "An outline, filled by the light"]]],
+    grain: ["Grain", [["on", "On"], ["off", "Off"]]],
+    blend: ["Blend", [["off", "Off"], ["on", "The light blends with the logo"]]],
+} as const;
+type Pick = { [K in keyof typeof GROUPS]: string };
+
+export function Playground() {
+    const [pick, setPick] = useState<Pick>({
+        base: "dim",
+        light: "small",
+        edge: "soft",
+        lit: "0.6",
+        colour: "text",
+        grain: "on",
+        blend: "off",
+    });
+    const [size, fade] = SHAPE[`${pick.light} ${pick.edge}` as keyof typeof SHAPE];
+    const vars = {
+        "--pg-spotlight-base": BASE[pick.base as keyof typeof BASE],
+        "--pg-spotlight-lit": pick.lit,
+        "--pg-spotlight-size": size,
+        "--pg-spotlight-fade": fade,
+    };
+
+    const css = [".logo {", ...Object.entries(vars).map(([k, v]) => `    ${k}: ${v};`)];
+    if (pick.colour === "brand") css.push("    --pg-spotlight-color: #ff0033;");
+    css.push("}");
+    if (pick.colour === "gold") css.push(".logo > [data-pg-spotlight-lit] {", "    fill: #e0b34a;", "}");
+    if (pick.colour === "outline")
+        css.push(
+            ...(pick.grain === "on" ? [".logo > svg:not([data-pg-spotlight-lit]) {", "    filter: none; /* a thin line is lost in the grain */", "}"] : []),
+            ".logo > svg:not([data-pg-spotlight-lit]) path {",
+            "    fill: none;",
+            "    stroke: currentColor;",
+            "    stroke-width: 1px;",
+            "    vector-effect: non-scaling-stroke;",
+            "}",
+        );
+    if (pick.blend === "on") css.push(".logo > [data-pg-spotlight-lit] {", "    mix-blend-mode: screen; /* multiply on a light page */", "}");
+    css.push("", `<div class="logo" data-pg-spotlight${pick.grain === "on" ? " data-pg-spotlight-grain" : ""}>…</div>`);
+
+    return (
+        <footer>
+            <h2>PlusGuard — every option · shown on phones</h2>
+            {(Object.keys(GROUPS) as (keyof typeof GROUPS)[]).map((group) => (
+                <fieldset key={group}>
+                    <legend>{GROUPS[group][0]}</legend>
+                    {GROUPS[group][1].map(([value, label]) => (
+                        <button
+                            key={value}
+                            type="button"
+                            aria-pressed={pick[group] === value}
+                            onClick={() => setPick({ ...pick, [group]: value })}
+                        >
+                            {label}
+                        </button>
+                    ))}
+                </fieldset>
+            ))}
+            <pre>{css.join("\n")}</pre>
+            {/* The grain attribute comes and goes with the pick: index.css
+                reads it, so it takes effect at once. */}
+            <div
+                className="play on-bottom"
+                style={vars as CSSProperties}
+                data-colour={pick.colour}
+                data-blend={pick.blend}
+                data-pg-spotlight
+                data-pg-spotlight-grain={pick.grain === "on" ? "" : undefined}
+                data-pg-spotlight-touch
+            >
+                {/* "PlusGuard" in Roboto Black, tight, drawn as a path. */}
+                <svg viewBox="10.74 -150 881.88 151.95" role="img" aria-label="PlusGuard">
+                    <path d="M66.89-48.24L45.02-48.24L45.02 0L10.74 0L10.74-142.19L67.48-142.19Q83.79-142.19 96.34-136.18Q108.89-130.18 115.77-119.09Q122.66-108.01 122.66-93.95L122.66-93.95Q122.66-73.14 107.76-60.69Q92.87-48.24 66.89-48.24L66.89-48.24ZM45.02-115.72L45.02-74.71L67.48-74.71Q77.44-74.71 82.67-79.69Q87.89-84.67 87.89-93.75L87.89-93.75Q87.89-103.71 82.52-109.67Q77.15-115.63 67.87-115.72L67.87-115.72L45.02-115.72ZM169.12-150L169.12 0L136.11 0L136.11-150L169.12-150ZM248.30 0L247.32-11.43Q236.88 1.95 219.10 1.95L219.10 1.95Q201.72 1.95 192.78-8.15Q183.85-18.26 183.85-37.21L183.85-37.21L183.85-105.66L216.76-105.66L216.76-37.01Q216.76-23.44 229.94-23.44L229.94-23.44Q241.27-23.44 246.05-31.54L246.05-31.54L246.05-105.66L279.16-105.66L279.16 0L248.30 0ZM347.50-29.69L347.50-29.69Q347.50-33.89 343.11-36.43Q338.71-38.96 326.41-41.70Q314.10-44.43 306.09-48.88Q298.09-53.32 293.89-59.67Q289.69-66.02 289.69-74.22L289.69-74.22Q289.69-88.77 301.70-98.19Q313.71-107.62 333.14-107.62L333.14-107.62Q354.04-107.62 366.74-98.14Q379.43-88.67 379.43-73.24L379.43-73.24L346.43-73.24Q346.43-85.94 333.05-85.94L333.05-85.94Q327.87-85.94 324.36-83.06Q320.84-80.18 320.84-75.88L320.84-75.88Q320.84-71.48 325.14-68.75Q329.43-66.02 338.86-64.26Q348.28-62.50 355.41-60.06L355.41-60.06Q379.24-51.86 379.24-30.66L379.24-30.66Q379.24-16.21 366.40-7.13Q353.55 1.95 333.14 1.95L333.14 1.95Q319.57 1.95 308.93-2.93Q298.28-7.81 292.32-16.21Q286.37-24.61 286.37-33.89L286.37-33.89L317.13-33.89Q317.32-26.56 322.01-23.19Q326.70-19.82 334.02-19.82L334.02-19.82Q340.76-19.82 344.13-22.56Q347.50-25.29 347.50-29.69ZM507.54-75.98L507.54-17.58Q499.63-8.79 484.39-3.42Q469.16 1.95 451.00 1.95L451.00 1.95Q423.07 1.95 406.37-15.14Q389.67-32.23 388.50-62.70L388.50-62.70L388.40-75Q388.40-96.00 395.82-111.67Q403.24-127.34 417.06-135.79Q430.88-144.24 449.04-144.24L449.04-144.24Q475.61-144.24 490.30-132.08Q505-119.92 507.44-95.80L507.44-95.80L474.43-95.80Q472.68-107.71 466.82-112.79Q460.96-117.87 450.21-117.87L450.21-117.87Q437.32-117.87 430.29-106.93Q423.26-96.00 423.16-75.68L423.16-75.68L423.16-67.09Q423.16-45.80 430.44-35.11Q437.71-24.41 453.34-24.41L453.34-24.41Q466.72-24.41 473.26-30.37L473.26-30.37L473.26-52.44L449.43-52.44L449.43-75.98L507.54-75.98ZM584.86 0L583.89-11.43Q573.44 1.95 555.66 1.95L555.66 1.95Q538.28 1.95 529.35-8.15Q520.41-18.26 520.41-37.21L520.41-37.21L520.41-105.66L553.32-105.66L553.32-37.01Q553.32-23.44 566.50-23.44L566.50-23.44Q577.83-23.44 582.62-31.54L582.62-31.54L582.62-105.66L615.72-105.66L615.72 0L584.86 0ZM721.17 0L688.26 0Q686.50-3.22 685.14-9.47L685.14-9.47Q676.05 1.95 659.75 1.95L659.75 1.95Q644.80 1.95 634.36-7.08Q623.91-16.11 623.91-29.79L623.91-29.79Q623.91-46.97 636.60-55.76Q649.30-64.55 673.52-64.55L673.52-64.55L683.67-64.55L683.67-70.12Q683.67-84.67 671.07-84.67L671.07-84.67Q659.36-84.67 659.36-73.14L659.36-73.14L626.45-73.14Q626.45-88.48 639.48-98.05Q652.52-107.62 672.73-107.62Q692.95-107.62 704.67-97.75Q716.39-87.89 716.68-70.70L716.68-70.70L716.68-23.93Q716.88-9.38 721.17-1.66L721.17-1.66L721.17 0ZM667.66-21.48L667.66-21.48Q673.81-21.48 677.86-24.12Q681.91-26.76 683.67-30.08L683.67-30.08L683.67-46.97L674.10-46.97Q656.91-46.97 656.91-31.54L656.91-31.54Q656.91-27.05 659.94-24.27Q662.97-21.48 667.66-21.48ZM794.39-106.45L793.81-75.88L782.97-76.66Q767.44-76.66 763.05-66.89L763.05-66.89L763.05 0L730.14 0L730.14-105.66L761.00-105.66L762.07-92.09Q770.37-107.62 785.21-107.62L785.21-107.62Q790.49-107.62 794.39-106.45L794.39-106.45ZM794.67-53.61L794.67-53.61Q794.67-78.71 805.51-93.16Q816.35-107.62 835.78-107.62L835.78-107.62Q849.94-107.62 859.61-96.48L859.61-96.48L859.61-150L892.62-150L892.62 0L863.03 0L861.37-11.33Q851.21 1.95 835.59 1.95L835.59 1.95Q816.74 1.95 805.70-12.50Q794.67-26.95 794.67-53.61ZM827.68-57.62L827.58-51.56Q827.58-23.44 843.98-23.44L843.98-23.44Q854.92-23.44 859.61-32.62L859.61-32.62L859.61-72.85Q855.12-82.23 844.18-82.23L844.18-82.23Q828.95-82.23 827.68-57.62L827.68-57.62Z" />
+                </svg>
+            </div>
+        </footer>
     );
 }
 
@@ -123,7 +229,7 @@ export function BugattiFooter() {
                 set={setLight}
                 choices={[
                     ["wide", "Wide and soft — as bugatti.com"],
-                    ["small", "A small circle"],
+                    ["small", "A small circle, dark"],
                 ]}
             />
             {/* Shown on phones too, at 0.2: dark until found is not lost there. */}

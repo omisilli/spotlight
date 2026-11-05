@@ -199,6 +199,35 @@ the page:
 #metal stop:nth-child(2) { stop-color: var(--metal-2); }
 ```
 
+## Recipes
+
+All CSS — variables on the box, and the lit copy styled through
+`[data-pg-spotlight-lit]`, which the script writes on it. The examples'
+first footer has every one of these, with the CSS written out as you pick.
+
+| Recipe | CSS |
+| ------ | --- |
+| **A brand colour** | `--pg-spotlight-color: #ff0033;` |
+| **Another colour in the light** — grey, gold where the pointer is | `.logo > [data-pg-spotlight-lit] { fill: gold; }` |
+| **An outline, filled by the light** | the logo `fill: none; stroke: currentColor; stroke-width: 1px; vector-effect: non-scaling-stroke` — and `filter: none` on it if it has grain: a thin line is lost in it |
+| **A torch** — a hard edge | `--pg-spotlight-size: 200px; --pg-spotlight-fade: 210px;` |
+| **A ghost** — barely there | `--pg-spotlight-base: 0.12;` |
+| **The light blends** with the logo | `.logo > [data-pg-spotlight-lit] { mix-blend-mode: screen; }` — `multiply` on a light page |
+| **No grain** | leave out `data-pg-spotlight-grain` |
+
+```css
+/* An outline, filled by the light. */
+.logo > svg:not([data-pg-spotlight-lit]) {
+    filter: none;
+}
+.logo > svg:not([data-pg-spotlight-lit]) path {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1px;
+    vector-effect: non-scaling-stroke;
+}
+```
+
 ## Touch screens
 
 A finger has no "over" — no light, and nothing to find. So on a touch
@@ -272,8 +301,20 @@ first cleanup runs (React remounting in development), only the newest call
 answers.
 
 See [`examples/react/Example.tsx`](examples/react/Example.tsx). A plain HTML
-version, with four footers — Gaga, Baibars, Bugatti (dark until found,
-edge to edge, with a switch to a small circle), set in a font on the
-page's bottom (a small circle, wide and soft, or wide, soft and dark);
-each saying whether it shows on phones — and a light/dark switch, is in
-[`examples/static/index.html`](examples/static/index.html).
+version is in [`examples/static/index.html`](examples/static/index.html), with
+a light/dark switch and five footers, each saying whether it shows on
+phones:
+
+1. **PlusGuard — every option**: buttons for each choice — dim, a ghost or
+   dark; a small circle or wide; a soft edge or a torch; the light's
+   strength; the text colour, a brand colour, gold in the light, or an
+   outline filled by the light; grain; blend — and the CSS for what you
+   pick, written out.
+2. **Gaga** — its own metal gradient, grain, 40% showing.
+3. **Baibars** — the text colour, grain, 40% showing.
+4. **Bugatti** — dark until found, edge to edge: wide, soft and dark, or a
+   small circle, dark.
+5. **Set in a font** — on the page's bottom: a small circle, wide and soft,
+   or wide, soft and dark.
+
+The React example has the same five.
