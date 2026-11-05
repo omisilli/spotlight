@@ -267,6 +267,7 @@ answers.
 
 See [`examples/react/Example.tsx`](examples/react/Example.tsx). A plain HTML
 version, with four footers — Gaga, Baibars, Bugatti (dark until found,
-edge to edge, with a switch between its wide soft light and a small
-circle), set in a font and edge to edge — and a light/dark switch, is in
+edge to edge), set in a font and edge to edge; the last two with a switch
+between the wide soft light and a small circle; each saying whether it
+shows on phones — and a light/dark switch, is in
 [`examples/static/index.html`](examples/static/index.html).

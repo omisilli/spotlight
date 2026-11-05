@@ -167,14 +167,17 @@
             .bugatti {
                 --pg-spotlight-base: 0;
                 --pg-spotlight-lit: 0.4;
-                --pg-spotlight-size: 0%;
-                --pg-spotlight-fade: 60%;
             }
-            /* The other way: a small circle, dark around it. */
             .bugatti[data-light="small"] {
                 --pg-spotlight-lit: 0.6;
-                --pg-spotlight-size: 160px;
-                --pg-spotlight-fade: 420px;
+            }
+
+            /* The light's two shapes, switched by the buttons: as wide as the
+               logo and fading all the way — or, without this, the package's
+               small circle (160px, fading out by 420px). */
+            [data-light="wide"] {
+                --pg-spotlight-size: 0%;
+                --pg-spotlight-fade: 60%;
             }
 
             /* Edge to edge, flush with the bottom: out of the footer's side
@@ -210,8 +213,8 @@
                 Move the mouse over the logos at the bottom of each footer: a circle of light follows it. The
                 logo is written once; the script lays a lit copy over it and opens it only around the pointer —
                 and keeps it there while the page scrolls. On a touch screen there is no pointer, so no light:
-                the logos are hidden there — all but Baibars, which asks to stay
-                (<code>data-pg-spotlight-touch</code>).
+                a logo is hidden there unless it asks to stay (<code>data-pg-spotlight-touch</code>) — here all
+                stay but Gaga's. Each footer says which.
             </p>
             <div class="row" role="group" aria-label="Colour scheme">
                 <button type="button" data-choice="system">System</button>
@@ -222,10 +225,11 @@
 
         <!-- 1 · Gaga: its own metal gradient, grain, 40% showing. -->
         <footer class="footer">
-            <h2>Gaga — metal, grain, 40% showing</h2>
+            <h2>Gaga — metal, grain, 40% showing · hidden on phones</h2>
             <p>
                 <code>data-pg-spotlight data-pg-spotlight-grain</code>. The logo's own gradient fills it; its
-                colours come from the page, so they turn with light and dark.
+                colours come from the page, so they turn with light and dark. On a phone it is hidden — the
+                default, as the Gaga site had it.
             </p>
             <div class="columns">
                 <div><b>Products</b><ul><li>All products</li></ul></div>
@@ -253,11 +257,11 @@
 
         <!-- 2 · Baibars: the text colour, grain, 40% showing. -->
         <footer class="footer">
-            <h2>Baibars — grain, 40% showing, kept on touch screens</h2>
+            <h2>Baibars — grain, 40% showing · shown on phones</h2>
             <p>
                 The same, in the text colour: <code>--pg-spotlight-color</code> is <code>currentColor</code> unless
                 set — dark on a light page, light on a dark one. <code>data-pg-spotlight-touch</code>: on a phone
-                it stays, at <code>--pg-spotlight-touch</code> (0.2), where the others are hidden.
+                it stays, without the light, at <code>--pg-spotlight-touch</code> (0.2).
             </p>
             <div class="columns">
                 <div><b>Products</b><ul><li>Industrial</li><li>Test fly</li></ul></div>
@@ -283,12 +287,13 @@
              bottom — as bugatti.com's footer has it. The wordmark is drawn as
              a path for this example; BUGATTI is its owner's trademark. -->
         <footer class="footer">
-            <h2>Bugatti — dark until found, edge to edge</h2>
+            <h2>Bugatti — dark until found, edge to edge · shown on phones</h2>
             <p>
                 As bugatti.com's footer has it: <code>--pg-spotlight-base: 0</code>, so nothing shows without the
                 light — but the light is as wide as the logo and fades all the way (<code>--pg-spotlight-size:
                 0%</code>, <code>--pg-spotlight-fade: 60%</code>, at <code>--pg-spotlight-lit: 0.4</code>), so the
-                letters only fade out the farther they are from the pointer. Or a small circle, dark around it:
+                letters only fade out the farther they are from the pointer. Or a small circle, dark around it. On a
+                phone it stays at 0.2 — so a logo that is dark until found is not lost there.
             </p>
             <div class="row" role="group" aria-label="The light">
                 <button type="button" data-light-choice="wide" aria-pressed="true">Wide and soft — as bugatti.com</button>
@@ -299,7 +304,7 @@
                 <div><b>Brand</b><ul><li>Heritage</li><li>Contact</li></ul></div>
                 <div><b>Owners</b><ul><li>Service</li><li>Parts</li></ul></div>
             </div>
-            <div class="bugatti flush" data-light="wide" data-pg-spotlight data-pg-spotlight-grain>
+            <div class="bugatti flush" data-light="wide" data-pg-spotlight data-pg-spotlight-grain data-pg-spotlight-touch>
                 <svg viewBox="0 0 2468.89 566.93" role="img" aria-label="Bugatti">
                     <path d="M272.56 273.34c28.81-26.48 45.95-63.86 45.95-107.47 0-89.56-65.41-154.97-155.75-154.97H0v545.13h174.44c92.67 0 160.42-66.97 160.42-159.64 0-52.18-23.36-95.79-62.3-123.04ZM87.22 95.01h72.42c42.83 0 71.65 28.81 71.65 70.87s-28.81 70.87-71.65 70.87H87.22V95.01Zm84.1 376.91h-84.1V320.84h84.1c45.17 0 76.32 30.37 76.32 75.54s-31.15 75.54-76.32 75.54ZM648.69 406.51c0 44.39-31.93 76.32-76.32 76.32s-76.32-31.93-76.32-76.32V10.9h-87.22v389.38c0 96.56 68.53 166.65 163.54 166.65s163.54-70.09 163.54-166.65V10.9h-87.22v395.61ZM993.03 0c-95.01 0-163.54 70.09-163.54 166.65v233.62c0 96.56 68.53 166.65 163.54 166.65s163.54-70.09 163.54-166.65V241.41H993.03v84.11h76.32v80.99c0 44.39-31.93 76.32-76.32 76.32s-76.32-31.93-76.32-76.32V160.42c0-44.39 31.93-76.32 76.32-76.32s76.32 31.93 76.32 76.32v14.02h87.22v-7.79C1156.57 70.09 1088.04 0 993.03 0ZM1344.1 10.9l-125.38 545.12h86.44L1330.08 447h147.96l24.92 109.02h86.44L1464.03 10.9H1344.1Zm5.45 351.99 54.51-239.08 54.51 239.08h-109.02ZM1604.2 95.01h119.93l.78 461.02h85.66l.78-461.02h119.92V10.9H1604.2v84.11zM1976.59 95.01h119.93l.78 461.02h85.66l.78-461.02h119.92V10.9h-327.07v84.11zM2381.67 10.9h87.22v545.12h-87.22z" />
                 </svg>
@@ -309,19 +314,24 @@
         <!-- 4 · Set in a font: the same logo as text, in Roboto Black from
              Google Fonts. -->
         <footer class="footer">
-            <h2>Set in a font — 40% showing, edge to edge</h2>
+            <h2>Set in a font — 40% showing, edge to edge · shown on phones</h2>
             <p>
                 The same "PlusGuard", as <code>&lt;text&gt;</code> in an SVG — Roboto Black, from Google Fonts. The
                 SVG's <code>viewBox</code> keeps it the width of the page, like a drawing; until the font has
                 loaded, a fallback stands in. No text cursor over it, nothing to select. The grain is the same
-                fine one as above: it is measured in the page's pixels, not the drawing's.
+                fine one as above: it is measured in the page's pixels, not the drawing's. The light's two shapes
+                again — on a logo that shows without it:
             </p>
+            <div class="row" role="group" aria-label="The light">
+                <button type="button" data-light-choice="small" aria-pressed="true">A small circle — the default</button>
+                <button type="button" data-light-choice="wide" aria-pressed="false">Wide and soft</button>
+            </div>
             <div class="columns">
                 <div><b>Engine</b><ul><li>Packages</li><li>Themes</li></ul></div>
                 <div><b>Docs</b><ul><li>Guides</li><li>Examples</li></ul></div>
                 <div><b>Company</b><ul><li>About</li><li>Contact</li></ul></div>
             </div>
-            <div class="flush" data-pg-spotlight data-pg-spotlight-grain>
+            <div class="flush" data-light="small" data-pg-spotlight data-pg-spotlight-grain data-pg-spotlight-touch>
                 <svg viewBox="10.74 -150 881.88 151.95" role="img" aria-label="PlusGuard">
                     <text font-family="Roboto, system-ui, sans-serif" font-weight="900" font-size="200" letter-spacing="-5">PlusGuard</text>
                 </svg>
@@ -333,12 +343,12 @@
 
             initSpotlight();
 
-            // Bugatti's light: wide and soft, or a small circle.
-            const bugatti = document.querySelector(".bugatti");
-            document.querySelectorAll("[data-light-choice]").forEach((b, _, all) =>
+            // The light's shape, footer by footer: wide and soft, or a small circle.
+            document.querySelectorAll("[data-light-choice]").forEach((b) =>
                 b.addEventListener("click", () => {
-                    bugatti.dataset.light = b.dataset.lightChoice;
-                    all.forEach((other) => other.setAttribute("aria-pressed", String(other === b)));
+                    const footer = b.closest("footer");
+                    footer.querySelector("[data-light]").dataset.light = b.dataset.lightChoice;
+                    footer.querySelectorAll("[data-light-choice]").forEach((other) => other.setAttribute("aria-pressed", String(other === b)));
                 }),
             );
 
