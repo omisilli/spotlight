@@ -12,7 +12,7 @@ attributes; light and dark, with or without Lenis; no dependencies.
 ```
 
 ```sh
-npm install github:omisilli/spotlight#v1.2.0
+npm install @plusguard/spotlight
 ```
 
 ```ts
@@ -31,14 +31,14 @@ Or the CSS from CSS, which lets you pick the cascade layer:
 ### Without a build step
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/omisilli/spotlight@v1.2.0/index.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@plusguard/spotlight@1.2.1/index.css" />
 <script type="module">
-    import { initSpotlight } from "https://cdn.jsdelivr.net/gh/omisilli/spotlight@v1.2.0/dist/index.js";
+    import { initSpotlight } from "https://cdn.jsdelivr.net/npm/@plusguard/spotlight@1.2.1/dist/index.js";
     initSpotlight();
 </script>
 ```
 
-Pin the version (`@v1.2.0`) on a live site. A pinned URL never changes;
+Pin the version (`@1.2.1`) on a live site. A pinned URL never changes;
 `@1` follows the newest 1.x release.
 
 ## Attributes
